@@ -19,6 +19,7 @@ class TurnamenController extends GetxController {
   var level = "Level A".obs;
   var link = "".obs;
   var nama = "".obs;
+  var kontak = "".obs;
   var status = "".obs;
   var table = 'turnamen';
   var lokasi = "".obs;
@@ -51,7 +52,7 @@ class TurnamenController extends GetxController {
         fromFirestore: Turnamen.fromFirestore,
         toFirestore: (Turnamen turnamen, _) => turnamen.toFirestore());
     try {
-      final docSnap = await ref.orderBy('date').get();
+      final docSnap = await ref.orderBy('date', descending: true).get();
       if (docSnap.docs.isNotEmpty) {
         dataTurnamen.clear();
         totalTur.value = docSnap.docs.length;
@@ -97,6 +98,7 @@ class TurnamenController extends GetxController {
           ket: ket.value,
           level: level.value,
           img: link.value,
+          kontak: kontak.value,
           pbsi: pbsi.value,
           batas: date2.value,
           lokasi: lokasi.value,
@@ -143,6 +145,7 @@ class TurnamenController extends GetxController {
         'date': date.value,
         'ket': ket.value,
         'level': level.value,
+        'kontak':kontak.value,
         'img': link.value,
         'batas': date2.value,
         'lokasi': lokasi.value,
@@ -256,6 +259,7 @@ class TurnamenController extends GetxController {
         batas: docSnap['batas'].toDate(),
         date: docSnap['date'].toDate(),
         ket: docSnap['ket'],
+        kontak: docSnap['kontak'],
         pbsi: docSnap['pbsi'],
         status: docSnap['status'],
       ));

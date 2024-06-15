@@ -85,28 +85,34 @@ class AuthController extends GetxController {
       final User? user = userCredential.user;
 
       if (user != null) {
-        isLogin.value = true;
         authEmail.value = user.email!.toString();
         final data = await db
             .collection('users')
             .where('email'.toString().toLowerCase(),
                 isEqualTo: authEmail.value.toLowerCase())
             .get();
-        authLevel.value = data.docs[0]['level'];
-        authpbsi.value = data.docs[0]['pbsi'];
-        authimg.value = data.docs[0]['img'];
-        try {
-          final datapb =
-              await db.collection("pbsi").doc(data.docs[0]['pbsi']).get();
-          if (datapb.data() != null) {
-            authpbsinama.value = datapb.data()!['nama'];
-            update();
+        if (data.docs.isNotEmpty) {
+          isLogin.value = true;
+
+          authLevel.value = data.docs[0]['level'];
+          authpbsi.value = data.docs[0]['pbsi'];
+          authimg.value = data.docs[0]['img'];
+          try {
+            final datapb =
+                await db.collection("pbsi").doc(data.docs[0]['pbsi']).get();
+            if (datapb.data() != null) {
+              authpbsinama.value = datapb.data()!['nama'];
+              update();
+            }
+          } catch (e) {
+            authpbsinama.value = data.docs[0]['pbsi'];
+            print(e);
           }
-        } catch (e) {
-          authpbsinama.value = data.docs[0]['pbsi'];
-          print(e);
+          Get.offAllNamed(PageNames.Home);
+        }else{
+          _auth.signOut();
+          isLoginFail.value = true;
         }
-        Get.offAllNamed(PageNames.Home);
       } else {
         isLoginFail.value = true;
       }

@@ -27,6 +27,7 @@ class UserController extends GetxController {
   var pbsi = "".obs;
   var skill = "Level D".obs;
   var hp = 0.obs;
+  var pbsiname = "".obs;
 
   var isRoot = true.obs;
   User? userProfil;
@@ -41,6 +42,22 @@ class UserController extends GetxController {
         totalUser.value = docSnap.docs.length;
         dataUser.clear();
         for (var i = 0; i < docSnap.docs.length; i++) {
+          final datas = await ref
+              .where('email'.toString().toLowerCase(),
+                  isEqualTo:
+                      docSnap.docs[i].data().email.toString().toLowerCase())
+              .get();
+
+          String? namas = docSnap.docs[i].data().pbsi;
+          if (namas != "") {
+            final snap =
+                await db.collection('pbsi').doc(datas.docs[0]['pbsi']).get();
+            if (snap != null) {
+              namas = snap.data()!['nama'];
+            }
+          }else{
+            namas = "Admin Pusat";
+          }
           dataUser.add(User(
             id: docSnap.docs[i].id,
             nama: docSnap.docs[i].data().nama,
@@ -51,7 +68,7 @@ class UserController extends GetxController {
             isPickUsername: docSnap.docs[i].data().isPickUsername,
             username: docSnap.docs[i].data().username,
             level: docSnap.docs[i].data().level,
-            pbsi: docSnap.docs[i].data().pbsi,
+            pbsi: namas,
             skill: docSnap.docs[i].data().skill,
           ));
         }
@@ -60,7 +77,9 @@ class UserController extends GetxController {
         dataUser.clear();
       }
       update();
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   addUser() async {
@@ -137,11 +156,28 @@ class UserController extends GetxController {
     update();
   }
 
+  getPBName(String userEmail) async {
+    final ref = db.collection("users").withConverter(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toFirestore());
+    try {
+      final data =
+          await ref.where('email'.toString(), isEqualTo: userEmail).get();
+      final snap = await db.collection('pbsi').doc(data.docs[0]['pbsi']).get();
+      if (snap != null) {
+        String nama = snap.data()!['nama'];
+        return nama;
+      }
+    } catch (e) {
+      return "No Data";
+    }
+  }
+
   getSingleUser() async {
     try {
       final ref = db.collection("users").withConverter(
-            fromFirestore: User.fromFirestore,
-            toFirestore: (User user, _) => user.toFirestore());
+          fromFirestore: User.fromFirestore,
+          toFirestore: (User user, _) => user.toFirestore());
       final data = await ref
           .where('email'.toString().toLowerCase(),
               isEqualTo: authC.authEmail.value.toLowerCase())
@@ -159,6 +195,12 @@ class UserController extends GetxController {
         pbsi: data.docs[0]['pbsi'],
         skill: data.docs[0]['skill'],
       );
+
+      final snap = await db.collection('pbsi').doc(userProfil!.pbsi).get();
+      if (snap != null) {
+        pbsiname.value = snap.data()!['nama'];
+        //print(use.data()!['nama']);
+      }
       update();
     } catch (e) {}
   }
@@ -166,7 +208,7 @@ class UserController extends GetxController {
   @override
   void onInit() {
     getUserData();
-   
+
     super.onInit();
   }
 }

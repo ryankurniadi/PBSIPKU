@@ -22,14 +22,6 @@ class PBSISource extends DataTableSource {
           children: [
             IconButton(
                 onPressed: () {
-                  pbsiC.getId();
-                },
-                icon: const Icon(
-                  Icons.abc,
-                  size: 20,
-                )),
-            IconButton(
-                onPressed: () {
                   Get.toNamed(PageNames.EditPBSI);
                   pbsiC.id.value = "${data.id}";
                   pbsiC.nama.value = "${data.nama}";

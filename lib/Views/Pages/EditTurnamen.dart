@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
@@ -80,6 +78,23 @@ final _formKey = GlobalKey<FormState>();
                       },
                       onSaved: (value) {
                         turC.nama.value = value!;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      initialValue: data.kontak,
+                      decoration: const InputDecoration(
+                          hintText: "Contact Person",
+                          label: Text("Contact Person")),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Data Wajib Di Isi";
+                        }
+                      },
+                      onSaved: (value) {
+                        turC.kontak.value = value!;
                       },
                     ),
                     const SizedBox(

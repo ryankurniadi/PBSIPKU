@@ -67,18 +67,17 @@ class DataPBSI extends StatelessWidget {
                 return PaginatedDataTable(
                   source: PBSISource(context),
                   header: const Text("Data PBSI Kota Pekanbaru"),
-                  rowsPerPage: (pbsiC.totalPBSI.value >= 7 ? 7 : pbsiC.totalPBSI.value),
+                  rowsPerPage:
+                      (pbsiC.totalPBSI.value >= 7 ? 7 : pbsiC.totalPBSI.value),
                   showFirstLastButtons: true,
                   showEmptyRows: false,
-                  
                   columns: const [
                     DataColumn(label: Text('Nama PBSI')),
                     DataColumn(label: Text('Aksi')),
                   ],
                 );
-              } else {
-                return const Text("No Data");
               }
+              return const Center(child: Text("Tidak ada Data PBSI"));
             },
           ),
         ],

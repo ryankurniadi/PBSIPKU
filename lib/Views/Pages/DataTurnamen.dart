@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
+import '../Widgets/TabelTurnamen.dart';
 import '../Widgets/NavBar.dart';
 import '../../Routes/PageNames.dart';
-import '../../Models/Turnamen.dart';
 import '../../Controllers/TurnamenContoller.dart';
 
 class DataTurnamen extends StatelessWidget {
@@ -19,72 +18,71 @@ class DataTurnamen extends StatelessWidget {
         //drawer: const Sidebar(),
         body: ListView(
           shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           children: [
-            const SizedBox(
-              height: 10,
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      Get.toNamed(PageNames.AddTurnamen);
+                    },
+                    child: Container(
+                        width: 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xff197500), Color(0xff007529)],
+                              stops: [0, 1],
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                            ),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: const Center(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Tambah Data Turnamen",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        )))),
+              ],
             ),
-            ElevatedButton(
-                onPressed: () {
-                  Get.toNamed(PageNames.AddTurnamen);
-                },
-                child: const Text("Tambah Data Turnamen")),
             const SizedBox(
-              height: 10,
+              height: 20,
             ),
             GetBuilder<TurnamenController>(
               builder: (turC) {
-                if (turC.totalTur.value > 0) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: turC.totalTur.value,
-                    itemBuilder: (context, index) {
-                      Turnamen dataTur = turC.dataTurnamen[index];
-                      return ListTile(
-                        title: Text("${dataTur.nama}"),
-                        leading: Image(image: NetworkImage(dataTur.img!, ), width: 100, height: 100,),
-                        subtitle: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("${dataTur.level}"),
-                            Text("${DateFormat('EEEE, dd MMMM yyyy', 'id').format(dataTur.date!)}")
-                          ],
-                        ),
-                        onTap: (){},
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(onPressed: ()async{
-                              turC.turID.value = "${dataTur.id}";
-                              await turC.getSingleTur();
-                              Get.toNamed(PageNames.EditTurnamen);
-                            }, icon: const Icon(Icons.edit)),
-                            IconButton(onPressed: (){
-                              Get.defaultDialog(
-                              title: "Konfirmasi Hapus",
-                              content: Text("Apakah kamu yakin untuk menghapus data ${dataTur.nama}?"),
-                              barrierDismissible: false,
-                              cancel: TextButton(onPressed: (){
-                                Get.back();
-                              }, child: const Text("Tidak")),
-                              confirm: TextButton(onPressed: (){
-                                if(!Get.isSnackbarOpen){
-                                   turC.deleteData("${dataTur.id}", "${dataTur.img}");
-                                }
-                               
-                              }, child: const Text("Iya"))
-                            );
-                            }, icon: const Icon(Icons.delete)),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(child: const Text("No Data"));
+                if(turC.totalTur.value > 0){
+                  return PaginatedDataTable(
+                  source: TabelTurnamen(context),
+                  header: const Text("Data Turnamen"),
+                  rowsPerPage:
+                      (turC.totalTur.value >= 7 ? 7 : turC.totalTur.value),
+                  showFirstLastButtons: true,
+                  showEmptyRows: false,
+                  dataRowMaxHeight: 200,
+                  columns: const [
+                    DataColumn(label: Text('Baner Turnamen')),
+                    DataColumn(label: Text('Nama Turnamen dan Level')),
+                    DataColumn(label: Text('Pelaksanaan')),
+                    DataColumn(label: Text('Lokasi')),
+                    DataColumn(label: Text('Aksi')),
+                  ],
+                );
                 }
+
+                return const Center(child:Text("Tidak ada Data Turnamen"));
               },
             ),
           ],

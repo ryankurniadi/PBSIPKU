@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
@@ -60,120 +61,274 @@ class AddTurnamner extends StatelessWidget {
             child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          hintText: "Nama Turnamen",
-                          label: Text("Nama Turnamen")),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Data Wajib Di Isi";
-                        }
-                      },
-                      onSaved: (value) {
-                        turC.nama.value = value!;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Row(
+                    Row(
                       children: [
-                        Text("Level Turnamen"),
-                      ],
-                    ),
-                    DropdownButtonFormField(
-                      items: const [
-                        DropdownMenuItem(
-                          value: "Level A",
-                          child: Text("Level A"),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Nama Turnamen",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                    hintText: "Nama Turnamen",
+                                    border: OutlineInputBorder()),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Data Wajib Di Isi";
+                                  }
+                                },
+                                onSaved: (value) {
+                                  turC.nama.value = value!;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Contact Person",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                keyboardType: TextInputType
+                                    .number, // Keyboard type untuk angka
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter
+                                      .digitsOnly // Formatter untuk angka saja
+                                ],
+                                decoration: const InputDecoration(
+                                    hintText: "Contact Person",
+                                    border: OutlineInputBorder()),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Data Wajib Di Isi";
+                                  }
+                                },
+                                onSaved: (value) {
+                                  turC.kontak.value = value!;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Level Turnamen",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              DropdownButtonFormField(
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder()),
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "Level A",
+                                    child: Text("Level A"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Level B",
+                                    child: Text("Level B"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Level C",
+                                    child: Text("Level C"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Level D",
+                                    child: Text("Level D"),
+                                  )
+                                ],
+                                value: "Level A",
+                                onChanged: (value) {
+                                  turC.level.value = value!;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Tanggal Turnamen",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  hintText: "${turC.dateShow}",
+                                  suffix: const Icon(Icons.calendar_month),
+                                ),
+                                readOnly: true,
+                                onTap: () {
+                                  _datePick(context);
+                                  inputC.inputChange(true);
+                                },
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Batas Pendaftaran",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "${turC.dateShow2}",
+                                  border: const OutlineInputBorder(),
+                                  suffix: const Icon(Icons.calendar_month),
+                                ),
+                                readOnly: true,
+                                onTap: () {
+                                  _datePick2(context);
+                                  inputC.inputChange(true);
+                                },
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Lokasi Turnamen",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                    hintText: "Lokasi Turnamen",
+                                    border: OutlineInputBorder()),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Data Wajib Di Isi";
+                                  }
+                                },
+                                onSaved: (value) {
+                                  turC.lokasi.value = value!;
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                        DropdownMenuItem(
-                          value: "Level B",
-                          child: Text("Level B"),
-                        ),
-                        DropdownMenuItem(
-                          value: "Level C",
-                          child: Text("Level C"),
-                        ),
-                        DropdownMenuItem(
-                          value: "Level D",
-                          child: Text("Level D"),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Brosur Turnamen",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 17),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Obx(() {
+                                if (prev.value != null &&
+                                    prev.value!.isNotEmpty) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      turC.pickImage();
+                                    },
+                                    child: Image.memory(
+                                      prev.value!,
+                                      width: 400,
+                                      height: 500,
+                                    ),
+                                  );
+                                } else {
+                                  return InkWell(
+                                      onTap: () async {
+                                        turC.pickImage();
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade400,
+                                          borderRadius:
+                                              BorderRadiusDirectional.circular(
+                                                  10),
+                                        ),
+                                        height: 500,
+                                        width: 400,
+                                        child: const Center(
+                                          child: Icon(Icons.photo),
+                                        ),
+                                      ));
+                                }
+                              }),
+                            ],
+                          ),
                         )
                       ],
-                      value: "Level A",
-                      onChanged: (value) {
-                        turC.level.value = value!;
-                      },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     const Row(
                       children: [
-                        Text("Tanggal Diadakan Turnamen"),
+                        Text(
+                          "Deskripsi Lengkap",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
                       ],
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "${turC.dateShow}",
-                        suffix: const Icon(Icons.calendar_month),
-                      ),
-                      readOnly: true,
-                      onTap: () {
-                        _datePick(context);
-                        inputC.inputChange(true);
-                      },
-                    ),
                     const SizedBox(
-                      height: 10,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Row(
-                      children: [
-                        Text("Batas Daftar Turnamen"),
-                      ],
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "${turC.dateShow2}",
-                        suffix: const Icon(Icons.calendar_month),
-                      ),
-                      readOnly: true,
-                      onTap: () {
-                        _datePick2(context);
-                        inputC.inputChange(true);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          hintText: "Lokasi Turnamen",
-                          label: Text("Lokasi Turnamen")),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Data Wajib Di Isi";
-                        }
-                      },
-                      onSaved: (value) {
-                        turC.lokasi.value = value!;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Row(
-                      children: [
-                        Text("Keterangan Turnamen"),
-                      ],
+                      height: 5,
                     ),
                     GetBuilder<InputHideController>(builder: (inputC) {
                       if (inputC.isHide.value) {
@@ -184,7 +339,8 @@ class AddTurnamner extends StatelessWidget {
                           child: HtmlEditor(
                             controller: controller,
                             htmlEditorOptions: HtmlEditorOptions(
-                              hint: "Masukan Keterangan",
+                              hint:
+                                  "Masukan deskripsi lengkap (Hadiah, Peraturan Dll.)",
                               initialText: turC.ket.value,
                               characterLimit: 1000,
                               autoAdjustHeight: true,
@@ -213,40 +369,6 @@ class AddTurnamner extends StatelessWidget {
                             ),
                           ),
                         );
-                      }
-                    }),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Row(
-                      children: [
-                        Text("Brosur Turnamen"),
-                      ],
-                    ),
-                    Obx(() {
-                      if (prev.value != null && prev.value!.isNotEmpty) {
-                        return Image.memory(
-                          prev.value!,
-                          width: 200,
-                          height: 200,
-                        );
-                      } else {
-                        return InkWell(
-                            onTap: () async {
-                              turC.pickImage();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white60,
-                                borderRadius:
-                                    BorderRadiusDirectional.circular(10),
-                              ),
-                              height: 100,
-                              width: 100,
-                              child: const Center(
-                                child: Icon(Icons.photo),
-                              ),
-                            ));
                       }
                     }),
                     const SizedBox(

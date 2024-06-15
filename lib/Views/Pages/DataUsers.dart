@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:data_table_2/data_table_2.dart';
 
 import '../Widgets/NavBar.dart';
 import '../../Routes/PageNames.dart';
-import '../../Models/User.dart';
+import '../Widgets/TabelUsers.dart';
 import '../../Controllers/UserController.dart';
 import '../../Controllers/AuthController.dart';
 
@@ -17,8 +16,8 @@ class DataUsers extends StatelessWidget {
       appBar: NavBar(title: "Data Users"),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          //shrinkWrap: true,
+        child: ListView(
+          shrinkWrap: true,
           //physics: const NeverScrollableScrollPhysics(),
           //
           children: [
@@ -66,69 +65,24 @@ class DataUsers extends StatelessWidget {
             ),
             GetBuilder<UserController>(
               builder: (userC) {
-                return Expanded(
-                  child: DataTable2(
-                    columnSpacing: 1,
-                    border: const TableBorder(),
+                if (userC.totalUser.value > 0) {
+                  return PaginatedDataTable(
+                    source: TabelUser(context),
+                    header: const Text("Data User"),
+                    rowsPerPage: (userC.totalUser.value >= 7
+                        ? 7
+                        : userC.totalUser.value),
+                    showFirstLastButtons: true,
+                    showEmptyRows: false,
                     columns: const [
                       DataColumn(label: Text('Nama')),
-                      DataColumn(label: Text('Username')),
                       DataColumn(label: Text('Level')),
                       DataColumn(label: Text('PBSI')),
                       DataColumn(label: Text('Aksi')),
                     ],
-                    rows:
-                        List<DataRow>.generate(userC.totalUser.value, (index) {
-                      User data = userC.dataUser[index];
-                      return DataRow(cells: [
-                        DataCell(
-                          Text("${data.nama}"),
-                        ),
-                        DataCell(
-                          Text("${data.username}"),
-                        ),
-                        DataCell(
-                          Text("${data.level}"),
-                        ),
-                        DataCell(
-                          Text("${data.pbsi}"),
-                        ),
-                        DataCell(
-                          GetBuilder<AuthController>(
-                            builder: (authC) {
-                              if (data.email == authC.authEmail.value || data.email == "ryankrv@gmail.com") {
-                                return const SizedBox();
-                              } else {
-                                return Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    InkWell(
-                                        onTap: () {},
-                                        child: const Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.key),
-                                            Text("Reset Password")
-                                          ],
-                                        )),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.edit)),
-                                    IconButton(
-                                        onPressed: () {
-                                          userC.deleteUser(data.id!, data.email!);
-                                        },
-                                        icon: const Icon(Icons.delete)),
-                                  ],
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ]);
-                    }),
-                  ),
-                );
+                  );
+                }
+                return const Center(child: Text("Tidak ada Data User"));
               },
             ),
           ],
