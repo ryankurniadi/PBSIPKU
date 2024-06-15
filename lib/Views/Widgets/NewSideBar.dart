@@ -6,6 +6,7 @@ import '../Pages/Beranda.dart';
 import '../Pages/BlankPage.dart';
 import '../Pages/DataPBSI.dart';
 import '../Pages/DataTurnamen.dart';
+import '../Pages/DataTurnamenPBSI.dart';
 import '../Pages/DataBerita.dart';
 import '../Pages/DataUsers.dart';
 import '../Pages/DataAnggota.dart';
@@ -39,12 +40,12 @@ class NewSideBar extends StatelessWidget {
         case 0:
           return Beranda();
         case 1:
-          return DataTurnamen();
+          return DataTurnamenPBSI();
         case 2:
           return DataAnggota();
-        case 4:
+        case 3:
           return DataBerita();
-        case 5:
+        case 4:
           return const BlankPage();
         default:
           return Beranda();

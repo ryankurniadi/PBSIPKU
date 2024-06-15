@@ -24,8 +24,12 @@ class TurnamenController extends GetxController {
   var table = 'turnamen';
   var lokasi = "".obs;
   var totalTur = 0.obs;
+  var ajutotalTur = 0.obs;
+  var limit = 0.obs;
+  var tipe = "".obs;
   var pbsi = "".obs;
   var dataTurnamen = [].obs;
+  var dataTurnamen2 = [].obs;
   var date = DateTime.now().obs;
   var date2 = DateTime.now().obs;
   var dateShow = "".obs;
@@ -41,6 +45,7 @@ class TurnamenController extends GetxController {
   @override
   void onInit() {
     getData();
+    getData2();
     showDate(DateTime.now());
     showDate2(DateTime.now());
     super.onInit();
@@ -52,7 +57,7 @@ class TurnamenController extends GetxController {
         fromFirestore: Turnamen.fromFirestore,
         toFirestore: (Turnamen turnamen, _) => turnamen.toFirestore());
     try {
-      final docSnap = await ref.orderBy('date', descending: true).get();
+      final docSnap = await ref.where('status'.toString(),isEqualTo: "Disetujui").where('tipe'.toString(), isEqualTo: "Publik").orderBy('date', descending: true).get();
       if (docSnap.docs.isNotEmpty) {
         dataTurnamen.clear();
         totalTur.value = docSnap.docs.length;
@@ -67,12 +72,49 @@ class TurnamenController extends GetxController {
             level: docSnap.docs[i].data().level,
             batas: docSnap.docs[i].data().batas,
             pbsi: docSnap.docs[i].data().pbsi,
+            tipe: docSnap.docs[i].data().tipe,
+            limit: docSnap.docs[i].data().limit,
             lokasi: docSnap.docs[i].data().lokasi,
           ));
         }
       } else {
         dataTurnamen.clear();
         totalTur.value = 0;
+      }
+      update();
+    } catch (e) {
+      print(e);
+    }
+  }
+  getData2() async {
+    ket.value = "";
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Turnamen.fromFirestore,
+        toFirestore: (Turnamen turnamen, _) => turnamen.toFirestore());
+    try {
+      final docSnap = await ref.where('status'.toString(),isEqualTo: "Pending").orderBy('date', descending: true).get();
+      if (docSnap.docs.isNotEmpty) {
+        dataTurnamen2.clear();
+        ajutotalTur.value = docSnap.docs.length;
+        for (var i = 0; i < docSnap.docs.length; i++) {
+          dataTurnamen2.add(Turnamen(
+            id: docSnap.docs[i].id,
+            nama: docSnap.docs[i].data().nama,
+            img: docSnap.docs[i].data().img,
+            ket: docSnap.docs[i].data().ket,
+            status: docSnap.docs[i].data().status,
+            date: docSnap.docs[i].data().date,
+            level: docSnap.docs[i].data().level,
+            batas: docSnap.docs[i].data().batas,
+            pbsi: docSnap.docs[i].data().pbsi,
+            limit: docSnap.docs[i].data().limit,
+            tipe: docSnap.docs[i].data().tipe,
+            lokasi: docSnap.docs[i].data().lokasi,
+          ));
+        }
+      } else {
+        dataTurnamen2.clear();
+        ajutotalTur.value = 0;
       }
       update();
     } catch (e) {
@@ -90,6 +132,10 @@ class TurnamenController extends GetxController {
       if (!statusupload.value) {
         throw Exception('No Image');
       }
+
+      if(pbsi.value == ""){
+        pbsi.value = "PBSI Pusat";
+      }
       await ref.add(
         Turnamen(
           nama: nama.value,
@@ -97,9 +143,11 @@ class TurnamenController extends GetxController {
           status: "Disetujui",
           ket: ket.value,
           level: level.value,
+          tipe: "Publik",
           img: link.value,
           kontak: kontak.value,
           pbsi: pbsi.value,
+          limit: limit.value,
           batas: date2.value,
           lokasi: lokasi.value,
         ),
@@ -117,7 +165,28 @@ class TurnamenController extends GetxController {
     }
   }
 
+  pengajuanTur(String stat)async{
+    loadC.changeLoading(true);
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Turnamen.fromFirestore,
+        toFirestore: (Turnamen turnamen, _) => turnamen.toFirestore());
+    try {
+      await ref.doc(turID.value).update({
+        "status": stat,
+      });
+      loadC.changeLoading(false);
+      Get.snackbar("Berhasil", "Data Berhasil $stat",
+          backgroundColor: Colors.green);
+      await getData();
+      await getData2();
+    } catch (e) {
+      loadC.changeLoading(false);
+      print(e);
+    }
+  }
+
   editData(Uint8List? image) async {
+    loadC.changeLoading(true);
     Turnamen data = dataSatuTur[0];
     statusupload.value = true;
     final ref = db.collection(table).withConverter(
@@ -147,6 +216,7 @@ class TurnamenController extends GetxController {
         'level': level.value,
         'kontak':kontak.value,
         'img': link.value,
+        'limit':limit.value,
         'batas': date2.value,
         'lokasi': lokasi.value,
       });
@@ -256,6 +326,7 @@ class TurnamenController extends GetxController {
         level: docSnap['level'],
         lokasi: docSnap['lokasi'],
         img: docSnap['img'],
+        limit: docSnap['limit'],
         batas: docSnap['batas'].toDate(),
         date: docSnap['date'].toDate(),
         ket: docSnap['ket'],

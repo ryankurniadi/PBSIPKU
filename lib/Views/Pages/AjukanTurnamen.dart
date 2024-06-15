@@ -7,14 +7,15 @@ import 'package:html_editor_enhanced/html_editor.dart';
 
 import '../Widgets/NavBar.dart';
 import '../Widgets/LoadingBarrier.dart';
-import '../../Controllers/TurnamenContoller.dart';
+import '../../Controllers/PBSITurController.dart';
 import '../../Controllers/InputHideController.dart';
 import '../../Controllers/LoadingController.dart';
 
-class AddTurnamner extends StatelessWidget {
-  AddTurnamner({super.key});
+class Ajukanturnamen extends StatelessWidget {
+  Ajukanturnamen({super.key});
+
   final _formKey = GlobalKey<FormState>();
-  final turC = Get.find<TurnamenController>();
+  final turC = Get.put(PBSITurController());
   final loadC = Get.find<LoadingController>();
   final inputC = Get.put(InputHideController());
   HtmlEditorController controller = HtmlEditorController();
@@ -55,8 +56,8 @@ class AddTurnamner extends StatelessWidget {
     var prev = turC.imageBytes;
     return SafeArea(
         child: Scaffold(
-      appBar: NavBar(title: "Tambah Turnamen"),
-      body: GetBuilder<TurnamenController>(builder: (turC) {
+      appBar: NavBar(title: "Ajukan Turnamen"),
+      body: GetBuilder<PBSITurController>(builder: (turC) {
         return LoadingBarrier(
             child: ListView(
           children: [
@@ -139,7 +140,7 @@ class AddTurnamner extends StatelessWidget {
                               const Row(
                                 children: [
                                   Text(
-                                    "Batas Perwakilan Tiap PBSI",
+                                    "Jenis Turnamen",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 17),
@@ -149,78 +150,130 @@ class AddTurnamner extends StatelessWidget {
                               const SizedBox(
                                 height: 5,
                               ),
-                              TextFormField(
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  TextInputFormatter.withFunction(
-                                    (oldValue, newValue) {
-                                      if (int.tryParse(newValue.text) ==
-                                          0) {
-                                        return oldValue;
-                                      }
-                                      return newValue;
-                                    },
-                                  )
-                                ],
-                                decoration: const InputDecoration(
-                                    hintText: "Inputkan Angka",
-                                    border: OutlineInputBorder()),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Data Wajib Di Isi";
-                                  }
-                                  int? number = int.tryParse(value!);
-                                },
-                                onSaved: (value) {
-                                  int? number = int.tryParse(value!);
-                                  turC.limit.value = number!;
-                                },
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const Row(
+                              Row(
                                 children: [
-                                  Text(
-                                    "Level Turnamen",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17),
+                                  Radio(
+                                      value: "Publik",
+                                      groupValue: turC.tipeRadio.value,
+                                      onChanged: (value) {
+                                        turC.changeTipe(value!);
+                                      }),
+                                  const Text("Publik"),
+                                  const SizedBox(
+                                    width: 15,
                                   ),
+                                  Radio(
+                                      value: "Internal",
+                                      groupValue: turC.tipeRadio.value,
+                                      onChanged: (value) {
+                                        turC.changeTipe(value!);
+                                      }),
+                                  const Text("Internal PB"),
                                 ],
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              DropdownButtonFormField(
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder()),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "Level A",
-                                    child: Text("Level A"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Level B",
-                                    child: Text("Level B"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Level C",
-                                    child: Text("Level C"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Level D",
-                                    child: Text("Level D"),
-                                  )
-                                ],
-                                value: "Level A",
-                                onChanged: (value) {
-                                  turC.level.value = value!;
-                                },
                               ),
                               const SizedBox(
                                 height: 10,
+                              ),
+                              GetBuilder<PBSITurController>(
+                                builder: (inputC) {
+                                  if (inputC.tipeRadio.value == "Publik") {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Row(
+                                          children: [
+                                            Text(
+                                              "Batas Perwakilan Tiap PBSI",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 17),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        TextFormField(
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            TextInputFormatter.withFunction(
+                                              (oldValue, newValue) {
+                                                if (int.tryParse(
+                                                        newValue.text) ==
+                                                    0) {
+                                                  return oldValue;
+                                                }
+                                                return newValue;
+                                              },
+                                            )
+                                          ],
+                                          decoration: const InputDecoration(
+                                              hintText: "Inputkan Angka",
+                                              border: OutlineInputBorder()),
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return "Data Wajib Di Isi";
+                                            }
+                                            int? number = int.tryParse(value!);
+                                          },
+                                          onSaved: (value) {
+                                            int? number = int.tryParse(value!);
+                                            turC.limit.value = number!;
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Text(
+                                              "Level Turnamen",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 17),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        DropdownButtonFormField(
+                                          decoration: const InputDecoration(
+                                              border: OutlineInputBorder()),
+                                          items: const [
+                                            DropdownMenuItem(
+                                              value: "Level A",
+                                              child: Text("Level A"),
+                                            ),
+                                            DropdownMenuItem(
+                                              value: "Level B",
+                                              child: Text("Level B"),
+                                            ),
+                                            DropdownMenuItem(
+                                              value: "Level C",
+                                              child: Text("Level C"),
+                                            ),
+                                            DropdownMenuItem(
+                                              value: "Level D",
+                                              child: Text("Level D"),
+                                            )
+                                          ],
+                                          value: "Level A",
+                                          onChanged: (value) {
+                                            turC.level.value = value!;
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    );
+                                  }
+
+                                  return const SizedBox();
+                                },
                               ),
                               const Row(
                                 children: [
@@ -418,27 +471,35 @@ class AddTurnamner extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            loadC.changeLoading(true);
-                            if (prev.value != null) {
-                              var txt = await controller.getText();
-                              if (txt.contains('src=\"data:')) {
-                                txt =
-                                    '<text removed due to base-64 data, displaying the text could cause the app to crash>';
-                              }
-                              turC.ket.value = txt;
-                              turC.addData(prev.value!);
-                            } else {
-                              Get.snackbar(
-                                  "Gagal", "Gambar Baner Tidak Boleh Kosong",
-                                  backgroundColor: Colors.red);
+                    InkWell(
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          loadC.changeLoading(true);
+                          if (prev.value != null) {
+                            var txt = await controller.getText();
+                            if (txt.contains('src=\"data:')) {
+                              txt =
+                                  '<text removed due to base-64 data, displaying the text could cause the app to crash>';
                             }
+                            turC.ket.value = txt;
+                            turC.addData(prev.value!);
+                          } else {
+                            Get.snackbar(
+                                "Gagal", "Gambar Baner Tidak Boleh Kosong",
+                                backgroundColor: Colors.red);
                           }
-                        },
-                        child: const Text("Tambah Data")),
+                        }
+                      },
+                      child: Container(
+                        width: Get.width / 1.1,
+                        height: 60,
+                        decoration: BoxDecoration(color: Colors.green),
+                        child: const Center(
+                          child: Text("Ajukan Turnamen"),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
