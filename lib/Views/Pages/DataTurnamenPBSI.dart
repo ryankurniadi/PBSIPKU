@@ -3,14 +3,18 @@ import "package:flutter/material.dart";
 import 'package:get/get.dart';
 
 import '../Widgets/TabelTurnamenPBSI.dart';
+import '../Widgets/TabelPeserta.dart';
 import '../../Controllers/PBSITurController.dart';
+import '../../Controllers/PesertaTurController.dart';
+import '../../Controllers/AuthController.dart';
 import '../../Routes/PageNames.dart';
 import '../Widgets/NavBar.dart';
 
 class DataTurnamenPBSI extends StatelessWidget {
   DataTurnamenPBSI({super.key});
+  final pesertaC = Get.put(PesertaTurController());
   final turC = Get.put(PBSITurController());
-
+  final authC = Get.find<AuthController>();
   List<TabData> tabs = [
     TabData(
         index: 1,
@@ -23,10 +27,11 @@ class DataTurnamenPBSI extends StatelessWidget {
         title: const Tab(
           child: Text("Pendaftaran Turnamen"),
         ),
-        content: const DataTur())
+        content: const DataPeserta())
   ];
   @override
   Widget build(BuildContext context) {
+    pesertaC.getDataPBSI(authC.authpbsi.value);
     return SafeArea(
       child: Scaffold(
           appBar: NavBar(title: "Data Turnamen PBSI"),
@@ -119,6 +124,37 @@ class DataTur extends StatelessWidget {
           );
         }
         return const Center(child: Text("Tidak ada Data Turnamen"));
+      },
+    );
+  }
+}
+
+class DataPeserta extends StatelessWidget {
+  const DataPeserta({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<PesertaTurController>(
+      builder: (pesertaC) {
+        if (pesertaC.totalPeserta.value > 0) {
+          return SingleChildScrollView(
+            child: PaginatedDataTable(
+              source: TabelPeserta(context),
+              header: const Text("Pengajuan Turnamen"),
+              rowsPerPage: (pesertaC.totalPeserta.value >= 7 ? 7 : pesertaC.totalPeserta.value),
+              showFirstLastButtons: true,
+              showEmptyRows: false,
+              dataRowMaxHeight: 150,
+              columns: const [
+                DataColumn(label: Text('Nama Pemain')),
+                DataColumn(label: Text('Nama Turnamen dan Level')),
+                DataColumn(label: Text('Status Pengajuan')),
+                DataColumn(label: Text('Aksi')),
+              ],
+            ),
+          );
+        }
+        return const Center(child: Text("Tidak ada Data Pengajuan"));
       },
     );
   }
