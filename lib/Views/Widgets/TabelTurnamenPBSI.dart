@@ -4,12 +4,14 @@ import 'package:intl/intl.dart';
 
 import '../../Models/Turnamen.dart';
 import '../../Controllers/PBSITurController.dart';
+import '../../Controllers/TurnamenContoller.dart';
 import '../../Routes/PageNames.dart';
 
 class TabelTurnamenPBSI extends DataTableSource {
   final BuildContext context;
   TabelTurnamenPBSI(this.context);
   final turC = Get.find<PBSITurController>();
+  final turAsliC = Get.find<TurnamenController>();
 
   @override
   bool get isRowCountApproximate => false;
@@ -87,45 +89,95 @@ class TabelTurnamenPBSI extends DataTableSource {
             )),
       )),
       DataCell(
-        Align(
-            alignment: Alignment.topLeft,
-            child: (data.status == "Ditolak"
-                ? SizedBox()
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          onPressed: () async {
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Align(
+              alignment: Alignment.topLeft,
+              child: (data.status == "Ditolak"
+                  ? SizedBox()
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            turAsliC.turID.value = "${data.id}";
+                            await turAsliC.getSingleTur();
+                            Get.toNamed(PageNames.DetailTurnamen);
+                          },
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              color: Colors.green,
+                            ),
+                            child: const Center(
+                                child: Icon(
+                              Icons.remove_red_eye,
+                              size: 20,
+                              color: Colors.white,
+                            )),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          onTap: () async {
                             turC.turID.value = "${data.id}";
                             //await turC.getSingleTur();
-                            // Get.toNamed(PageNames.EditTurnamen);
+                            //Get.toNamed(PageNames.EditTurnamen);
                           },
-                          icon: const Icon(Icons.edit)),
-                      (data.status == "Disetujui"
-                          ? const SizedBox()
-                          : IconButton(
-                              onPressed: () {
-                                Get.defaultDialog(
-                                    title: "Konfirmasi Hapus",
-                                    content: Text(
-                                        "Apakah kamu yakin untuk menghapus data ${data.nama}?"),
-                                    barrierDismissible: false,
-                                    cancel: TextButton(
-                                        onPressed: () {
-                                          Get.back();
-                                        },
-                                        child: const Text("Tidak")),
-                                    confirm: TextButton(
-                                        onPressed: () {
-                                          if (!Get.isSnackbarOpen) {
-                                            //turC.deleteData("${data.id}", "${data.img}");
-                                          }
-                                        },
-                                        child: const Text("Iya")));
-                              },
-                              icon: const Icon(Icons.delete)))
-                    ],
-                  ))),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: const BoxDecoration(
+                              color: Colors.blue,
+                            ),
+                            child: const Center(
+                                child: Icon(
+                              Icons.edit,
+                              size: 20,
+                              color: Colors.white,
+                            )),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        (data.status == "Disetujui"
+                            ? const SizedBox()
+                            : InkWell(
+                                onTap: () {
+                                  Get.defaultDialog(
+                                      title: "Konfirmasi Hapus",
+                                      content: Text(
+                                          "Apakah kamu yakin untuk menghapus data ${data.nama}?"),
+                                      barrierDismissible: false,
+                                      cancel: TextButton(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: const Text("Tidak")),
+                                      confirm: TextButton(
+                                          onPressed: () {
+                                            if (!Get.isSnackbarOpen) {}
+                                          },
+                                          child: const Text("Iya")));
+                                },
+                                child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration:
+                                        const BoxDecoration(color: Colors.red),
+                                    child: const Center(
+                                        child: Icon(
+                                      Icons.delete,
+                                      size: 20,
+                                      color: Colors.white,
+                                    )))))
+                      ],
+                    ))),
+        ),
       ),
     ]);
   }

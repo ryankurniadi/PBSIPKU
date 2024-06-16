@@ -21,6 +21,7 @@ abstract class PageNames{
   static const AddTurnamen = '/Add-Turnamen';
   static const EditTurnamen = '/Edit-Turnamen';
   static const AjukanTurnamen = '/Ajukan-Turnamen';
+  static const DetailTurnamen = '/Detail-Turnamen';
 
   //Berita
   static const DataBerita = '/Data-Berita';

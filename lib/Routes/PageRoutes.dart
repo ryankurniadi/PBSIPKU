@@ -19,6 +19,7 @@ import '../Views/Pages/AddTurnament.dart';
 import '../Views/Pages/DataTurnamen.dart';
 import '../Views/Pages/EditTurnamen.dart';
 import '../Views/Pages/AjukanTurnamen.dart';
+import '../Views/Pages/DetailTurnamen.dart';
 
 import '../Views/Pages/DataBerita.dart';
 
@@ -115,6 +116,12 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => Ajukanturnamen()),
+    GetPage(
+        name: PageNames.DetailTurnamen,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => DetailTurnamen()),
 
     //Berita
     GetPage(
