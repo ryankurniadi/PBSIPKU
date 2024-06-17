@@ -14,6 +14,7 @@ class PesertaTurController extends GetxController {
   var dataPeserta = [].obs;
   var totalPeserta = 0.obs;
 
+
   var klik = false.obs;
 
   String tabel = "peserta";
