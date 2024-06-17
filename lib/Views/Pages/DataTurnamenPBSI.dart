@@ -9,6 +9,7 @@ import '../../Controllers/PesertaTurController.dart';
 import '../../Controllers/AuthController.dart';
 import '../../Routes/PageNames.dart';
 import '../Widgets/NavBar.dart';
+import '../Widgets/LoadingBarrier.dart';
 
 class DataTurnamenPBSI extends StatelessWidget {
   DataTurnamenPBSI({super.key});
@@ -31,7 +32,7 @@ class DataTurnamenPBSI extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    pesertaC.getDataPBSI(authC.authpbsi.value);
+    
     return SafeArea(
       child: Scaffold(
           appBar: NavBar(title: "Data Turnamen PBSI"),
@@ -134,6 +135,9 @@ class DataPeserta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pesertaC = Get.find<PesertaTurController>();
+  final authC = Get.find<AuthController>();
+    pesertaC.getDataPBSI(authC.authpbsi.value);
     return GetBuilder<PesertaTurController>(
       builder: (pesertaC) {
         if (pesertaC.totalPeserta.value > 0) {

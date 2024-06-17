@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Widgets/LoadingBarrier.dart';
 import '../../Models/PesertaView.dart';
 import '../../Controllers/PesertaTurController.dart';
 
@@ -25,7 +26,16 @@ class TabelPeserta extends DataTableSource {
     return DataRow.byIndex(index: index, cells: [
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Align(alignment: Alignment.topLeft, child: Text("${data.nama}")),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${data.nama}",
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+            ),
+            Text("${data.email}"),
+          ],
+        ),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -54,17 +64,21 @@ class TabelPeserta extends DataTableSource {
               ),
             )),
       )),
-       DataCell(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Align(
-              alignment: Alignment.topLeft,
+      DataCell(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: (data.status! != "Pending" ? const SizedBox() : LoadingBarrier(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   InkWell(
                     onTap: () {
-                    //  turC.turID.value = "${data.id}";
+                      if(!pesertaC.klik.value){
+                        pesertaC.setujuiPengajuan(data.id!, data.idPBSI!, data.idTurnamen!, data.idUser!);
+                      }
+                      //  turC.turID.value = "${data.id}";
                       //turC.pengajuanTur("Disetujui");
                     },
                     child: Container(
@@ -81,8 +95,11 @@ class TabelPeserta extends DataTableSource {
                   ),
                   InkWell(
                     onTap: () {
-                    //  turC.turID.value = "${data.id}";
-                     // turC.pengajuanTur("Ditolak");
+                      //  turC.turID.value = "${data.id}";
+                      // turC.pengajuanTur("Ditolak");
+                       if(!pesertaC.klik.value){
+                        pesertaC.tolakPengajuan(data.id!, data.idPBSI!, data.idTurnamen!);
+                      }
                     },
                     child: Container(
                       height: 40,
@@ -95,9 +112,10 @@ class TabelPeserta extends DataTableSource {
                   ),
                 ],
               ),
-            ),
+            )),
           ),
         ),
+      ),
     ]);
   }
 }

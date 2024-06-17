@@ -47,6 +47,7 @@ class AnggotaController extends GetxController {
           dataUser.add(User(
             id: docSnap.docs[i].id,
             nama: docSnap.docs[i].data().nama,
+            token: docSnap.docs[i].data().token,
             hp: docSnap.docs[i].data().hp,
             email: docSnap.docs[i].data().email,
             img: docSnap.docs[i].data().img,
@@ -75,6 +76,7 @@ class AnggotaController extends GetxController {
     final _user = User(
       nama: nama.value,
       img: defaultimg,
+      token: "",
       username: "null",
       email: email.value,
       hp: hp.value,

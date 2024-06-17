@@ -67,6 +67,7 @@ class UserController extends GetxController {
             isActive: docSnap.docs[i].data().isActive,
             isPickUsername: docSnap.docs[i].data().isPickUsername,
             username: docSnap.docs[i].data().username,
+            token: docSnap.docs[i].data().token,
             level: docSnap.docs[i].data().level,
             pbsi: namas,
             skill: docSnap.docs[i].data().skill,
@@ -86,6 +87,7 @@ class UserController extends GetxController {
     loadC.changeLoading(true);
     final _user = User(
       nama: nama.value,
+      token: "",
       img: defaultimg,
       username: "null",
       email: email.value,

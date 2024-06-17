@@ -11,10 +11,12 @@ class User{
   String? pbsi;
   String? skill;
   String? img;
+  String? token;
   int? hp;
 
   User({
     this.id,
+    this.token,
     this.nama,
     this.level,
     this.img,
@@ -36,6 +38,7 @@ class User{
       id: snapshot.id,
       nama: data?['nama'],
       email: data?['email'],
+      token: data?['token'],
       hp: data?['hp'],
       img: data?['img'],
       isActive: data?['isActive'],
@@ -59,6 +62,7 @@ class User{
       if (level  != null) 'level' : level,
       if (skill  != null) 'skill' : skill,
       if (pbsi  != null) 'pbsi' : pbsi,
+      if (token  != null) 'token' : token,
       if (isActive  != null) 'isActive' : isActive,
       if (isPickUsername  != null) 'isPickUsername' : isPickUsername,
 

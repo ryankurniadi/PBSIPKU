@@ -4,30 +4,39 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
+import '../../Controllers/PesertaTerdaftarController.dart';
+import '../Widgets/TabelPesertaTurnamen.dart';
 import '../Widgets/NavBar.dart';
 import '../../Models/Turnamen.dart';
+import '../Widgets/LoadingBarrier.dart';
 import '../../Controllers/TurnamenContoller.dart';
 
 class DetailTurnamen extends StatelessWidget {
   DetailTurnamen({super.key});
 
+  final terC = Get.put(PesertaTerdaftarController());
+  final turC = Get.find<TurnamenController>();
   @override
   Widget build(BuildContext context) {
+    terC.getData(turC.turID.value);
     return SafeArea(
         child: Scaffold(
       appBar: NavBar(title: "Detail Turnamen"),
-      body: GetBuilder<TurnamenController>(
-        builder: (turC) => ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            itemCount: turC.dataSatuTur.length,
-            itemBuilder: (context, index) {
-              Turnamen data = turC.dataSatuTur[index];
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 10),
-                    child: Expanded(
+      body: LoadingBarrier(
+        child: GetBuilder<TurnamenController>(
+          builder: (_) => ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              itemCount: turC.dataSatuTur.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                Turnamen data = turC.dataSatuTur[index];
+                return ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +173,6 @@ class DetailTurnamen extends StatelessWidget {
                               const SizedBox(
                                 height: 10,
                               ),
-                              
                               RichText(
                                 text: TextSpan(
                                     text: "Pelaksanaan Turnamen : ",
@@ -227,32 +235,53 @@ class DetailTurnamen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 10),
-                    child: Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Data Pesera",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 23),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 20),
+                      child: GetBuilder<PesertaTerdaftarController>(
+                        builder: (terC) {
+                          if (terC.totalPeserta <= 0) {
+                            return const Center(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Data Peserta",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 23),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text("Tidak ada peserta yang terdaftar"),
+                                ],
+                              ),
+                            );
+                          }
+                          return PaginatedDataTable(
+                            source: TabelPesertaTurnamen(context),
+                            header: const Text("Daftar Peserta"),
+                            rowsPerPage: (terC.totalPeserta.value >= 7
+                                ? 7
+                                : terC.totalPeserta.value),
+                            showFirstLastButtons: true,
+                            showEmptyRows: false,
+                            dataRowMaxHeight: 150,
+                            columns: const [
+                              DataColumn(label: Text('Nama Peserta')),
+                              DataColumn(label: Text('Asal PBSI')),
+                              DataColumn(label: Text('Aksi')),
+                            ],
+                          );
+                        },
                       ),
                     ),
-                  ),
-                ],
-              );
-            }),
+                  ],
+                );
+              }),
+        ),
       ),
     ));
   }
