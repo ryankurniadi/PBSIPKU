@@ -15,7 +15,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
-/lib/Api/
+
 
 
 
@@ -33,6 +33,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/lib/Api/
 
 # Symbolication related
 app.*.symbols
