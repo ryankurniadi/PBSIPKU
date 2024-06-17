@@ -11,8 +11,6 @@ import './LoadingController.dart';
 class PesertaTurController extends GetxController {
   final db = FirebaseFirestore.instance;
   final loadC = Get.find<LoadingController>();
-
-
   var dataPeserta = [].obs;
   var totalPeserta = 0.obs;
 
