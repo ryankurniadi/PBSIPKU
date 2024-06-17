@@ -77,6 +77,7 @@ class TabelPeserta extends DataTableSource {
                     onTap: () {
                       if(!pesertaC.klik.value){
                         pesertaC.setujuiPengajuan(data.id!, data.idPBSI!, data.idTurnamen!, data.idUser!);
+                      
                       }
                       //  turC.turID.value = "${data.id}";
                       //turC.pengajuanTur("Disetujui");
