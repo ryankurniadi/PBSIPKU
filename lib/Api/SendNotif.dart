@@ -13,7 +13,7 @@ class SendNotif {
 
   sendNotif(String token, String title, String isi) async {
     try {
-      
+      //test
     } catch (e) {
       print(e);
     }
