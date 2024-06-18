@@ -62,7 +62,10 @@ class BeritaController extends GetxController {
         toFirestore: (Berita berita, _) => berita.toFirestore());
 
     try {
-      final data = await ref.orderBy('date', descending: true).limit(7).get();
+      var data = await ref.orderBy('date', descending: true).limit(7).get();
+      if(authC.authpbsi.value != ""){
+        data = await ref.where('penulis'.toString(), whereIn: ['${authC.authpbsi.value}', 'PBSI Pusat']).orderBy('date', descending: true).limit(7).get();
+      }
       if (data.docs.isNotEmpty) {
         totalBeritaAdmin.value = data.docs.length;
         dataBeritaAdmin.clear();
@@ -138,6 +141,8 @@ class BeritaController extends GetxController {
       Get.snackbar("Berhasil", "Data Berhasil Di tambah",
           backgroundColor: Colors.green);
       imageBytes.value = Uint8List(0);
+      getData();
+      getBeritaPerAdmin();
     } catch (e) {
       loadC.changeLoading(false);
       print(e);
