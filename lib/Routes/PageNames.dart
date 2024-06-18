@@ -25,6 +25,7 @@ abstract class PageNames{
 
   //Berita
   static const DataBerita = '/Data-Berita';
+  static const AddBerita = '/Add-Berita';
 
   //Users
   static const DataUser = '/Data-Users';

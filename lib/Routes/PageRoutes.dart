@@ -22,6 +22,7 @@ import '../Views/Pages/AjukanTurnamen.dart';
 import '../Views/Pages/DetailTurnamen.dart';
 
 import '../Views/Pages/DataBerita.dart';
+import '../Views/Pages/AddBerita.dart';
 
 import '../Views/Pages/DataUsers.dart';
 import '../Views/Pages/AddUser.dart';
@@ -130,6 +131,12 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => DataBerita()),
+    GetPage(
+        name: PageNames.AddBerita,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => AddBerita()),
 
     //Users
     GetPage(

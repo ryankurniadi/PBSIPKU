@@ -1,17 +1,124 @@
+import 'dart:html';
+import 'dart:ui_web';
 import 'dart:typed_data';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import './AuthController.dart';
+import './LoadingController.dart';
 import '../Models/Berita.dart';
 
-class BeritaController extends GetxController{
+class BeritaController extends GetxController {
   final db = FirebaseFirestore.instance;
+  final authC = Get.find<AuthController>();
+  final loadC = Get.find<LoadingController>();
   final Rx<Uint8List?> imageBytes = Uint8List(0).obs;
+  String imgDefault =
+      "https://firebasestorage.googleapis.com/v0/b/pbsi-pku.appspot.com/o/Berita%2Fdefault.png?alt=media&token=b0a55b89-53f0-4682-ac11-a449b8b2ca3d";
   var id = "".obs;
-  var img = "".obs;
   var totalBerita = 0.obs;
-  
-  
+  var statusupload = true.obs;
+  String table = 'berita';
 
+  var img = "".obs;
+  var judul = "".obs;
+  var isi = "".obs;
+  var penulis = "".obs;
+  var isImg = false.obs;
+
+  Future<void> pickImage() async {
+    try {
+      final FileUploadInputElement input = FileUploadInputElement();
+      input..accept = 'image/*';
+      input.click();
+      input.onChange.listen((e) {
+        final File file = input.files!.first;
+        final FileReader reader = FileReader();
+
+        reader.onLoadEnd.listen((e) {
+          imageBytes.value = reader.result as Uint8List?;
+        });
+
+        reader.readAsArrayBuffer(file);
+      });
+    } catch (e) {
+      print(e);
+    }
+    update();
+  }
+
+  addBerita(Uint8List? image) async {
+    statusupload.value = true;
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+    img.value = imgDefault;
+    try {
+      if (isImg.value) {
+        try {
+          await uploadImg(image!);
+          if (!statusupload.value) {
+            throw Exception('No Image');
+          }
+        } catch (e) {
+          print(e);
+          loadC.changeLoading(false);
+          Get.snackbar("Gagal", "Error Pada Gambar",
+              backgroundColor: Colors.red);
+        }
+      }
+
+      if (authC.authpbsi.value == "") {
+        penulis.value = "PBSI Pusat";
+      } else {
+        penulis.value = authC.authpbsi.value;
+      }
+
+      await ref.add(
+        Berita(
+          judul: judul.value,
+          isi: isi.value,
+          img: img.value,
+          penulis: penulis.value,
+          date: DateTime.now(),
+        ),
+      );
+      loadC.changeLoading(false);
+      Get.back();
+      Get.snackbar("Berhasil", "Data Berhasil Di tambah",
+          backgroundColor: Colors.green);
+      imageBytes.value = Uint8List(0);
+    } catch (e) {
+      loadC.changeLoading(false);
+      print(e);
+    }
+  }
+
+  uploadImg(Uint8List imageData) async {
+    try {
+      if (imageBytes.value != null && imageBytes.value!.isNotEmpty) {
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('/Berita')
+            .child("${DateTime.now().microsecondsSinceEpoch}.png");
+        await ref.putData(imageData);
+        String downloadURL = await ref.getDownloadURL();
+        img.value = downloadURL;
+      } else {
+        statusupload.value = false;
+        throw Exception('No Image');
+      }
+    } catch (e) {
+      Get.snackbar("Gagal", "Gambar Gagal Di Upload",
+          backgroundColor: Colors.red);
+    }
+  }
+
+  editImgChanger(bool isImgChange) {
+    isImg.value = isImgChange;
+    update();
+  }
 }

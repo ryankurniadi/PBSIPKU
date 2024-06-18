@@ -7,10 +7,11 @@ import '../../Controllers/PBSIController.dart';
 import '../../Controllers/UserController.dart';
 import '../../Controllers/TurnamenContoller.dart';
 import '../../Controllers/AuthController.dart';
+import '../../Controllers/BeritaController.dart';
 
 class Beranda extends StatelessWidget {
   Beranda({super.key});
-  
+  final bertaC = Get.put(BeritaController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
