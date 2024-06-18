@@ -19,9 +19,15 @@ class BeritaController extends GetxController {
   String imgDefault =
       "https://firebasestorage.googleapis.com/v0/b/pbsi-pku.appspot.com/o/Berita%2Fdefault.png?alt=media&token=b0a55b89-53f0-4682-ac11-a449b8b2ca3d";
   var id = "".obs;
-  var totalBerita = 0.obs;
+
   var statusupload = true.obs;
   String table = 'berita';
+
+  var dataBeritaAdmin = [].obs;
+  var totalBeritaAdmin = 0.obs;
+
+  var dataPerAdmin = [].obs;
+  var totalDataPerAdmin = 0.obs;
 
   var img = "".obs;
   var judul = "".obs;
@@ -48,6 +54,47 @@ class BeritaController extends GetxController {
       print(e);
     }
     update();
+  }
+
+  getData() async {
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+
+    try {
+      final data = await ref.orderBy('date', descending: true).limit(7).get();
+      if (data.docs.isNotEmpty) {
+        totalBeritaAdmin.value = data.docs.length;
+        dataBeritaAdmin.clear();
+        for (var i = 0; i < totalBeritaAdmin.value; i++) {
+          String? author = data.docs[i].data().penulis;
+          if (data.docs[i].data().penulis == "") {
+            author = "PBSI Pusat";
+          } else {
+            if (author != "PBSI Pusat") {
+              final dataPBSI = await db.collection('pbsi').doc(author).get();
+              if (dataPBSI != null) {
+                author = "${dataPBSI.data()!['nama']}";
+              }
+            }
+          }
+
+          dataBeritaAdmin.add(Berita(
+            judul: data.docs[i].data().judul,
+            date: data.docs[i].data().date,
+            id: data.docs[i].data().id,
+            img: data.docs[i].data().img,
+            isi: data.docs[i].data().isi,
+            penulis: author,
+          ));
+        }
+      } else {
+        totalBeritaAdmin.value = 0;
+      }
+      update();
+    } catch (e) {
+      print(e);
+    }
   }
 
   addBerita(Uint8List? image) async {
@@ -120,5 +167,69 @@ class BeritaController extends GetxController {
   editImgChanger(bool isImgChange) {
     isImg.value = isImgChange;
     update();
+  }
+
+  getBeritaPerAdmin() async {
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+
+    String author = authC.authpbsi.value;
+    if (author == "") {
+      author = "PBSI Pusat";
+    }
+
+    try {
+      final data = await ref
+          .where('penulis'.toString(), isEqualTo: author)
+          .orderBy('date', descending: true)
+          .get();
+      if (data.docs.isNotEmpty) {
+        dataPerAdmin.clear();
+        totalDataPerAdmin.value = data.docs.length;
+
+        for (var i = 0; i < totalDataPerAdmin.value; i++) {
+          dataPerAdmin.add(Berita(
+            judul: data.docs[i].data().judul,
+            date: data.docs[i].data().date,
+            id: data.docs[i].data().id,
+            img: data.docs[i].data().img,
+            isi: data.docs[i].data().isi,
+            penulis: author,
+          ));
+        }
+      }
+
+      update();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  deleteBerita(String id, String img) async {
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+
+    try {
+      if (img != imgDefault) {
+        Reference refs = FirebaseStorage.instance.refFromURL(img);
+        await refs.delete();
+      }
+      await ref.doc(id).delete();
+      Get.back();
+      Get.snackbar("Berhasil", "Data Berhasil Di Hapus",
+          backgroundColor: Colors.green);
+      getBeritaPerAdmin();
+      getData();
+    } catch (e) {
+      Get.snackbar("Gagal", "Data Gagal Di Hapus", backgroundColor: Colors.red);
+      print(e);
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
   }
 }

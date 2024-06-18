@@ -19,7 +19,7 @@ class Berita {
       isi: data?['isi'],
       img: data?['img'],
       penulis: data?['penulis'],
-      date: data?['date'].toDate,
+      date: data?['date'].toDate(),
     );
   }
 

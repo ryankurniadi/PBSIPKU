@@ -6,6 +6,7 @@ import '../Controllers/LoadingController.dart';
 import '../Controllers/SidebarContoller.dart';
 import '../Controllers/TurnamenContoller.dart';
 import '../Controllers/UserController.dart';
+import '../Controllers/BeritaController.dart';
 
 class HomeBinding extends Bindings {
   @override
@@ -16,6 +17,7 @@ class HomeBinding extends Bindings {
     Get.put(UserController());
     Get.put(PBSIController());
     Get.put(TurnamenController());
+    Get.put(BeritaController());
     
   }
 }

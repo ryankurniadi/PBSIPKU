@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Widgets/TabelBerita.dart';
 import '../../Routes/PageNames.dart';
 import '../Widgets/NavBar.dart';
+import '../../Controllers/BeritaController.dart';
 
 class DataBerita extends StatelessWidget {
   DataBerita({super.key});
 
+  final beritaC = Get.find<BeritaController>();
   @override
   Widget build(BuildContext context) {
+    beritaC.getBeritaPerAdmin();
     return SafeArea(
         child: Scaffold(
       appBar: NavBar(title: "Data Berita"),
@@ -56,6 +60,30 @@ class DataBerita extends StatelessWidget {
           ),
           const SizedBox(
             height: 20,
+          ),
+          GetBuilder<BeritaController>(
+            builder: (_) {
+              if (beritaC.totalDataPerAdmin.value > 0) {
+                return PaginatedDataTable(
+                  source: TabelBerita(context),
+                  header: const Text("Data Berita/Kegiatan"),
+                  rowsPerPage: (beritaC.totalDataPerAdmin.value >= 7
+                      ? 7
+                      : beritaC.totalDataPerAdmin.value),
+                  showFirstLastButtons: true,
+                  showEmptyRows: false,
+                  dataRowMaxHeight: 200,
+                  
+                  columns: const [
+                    DataColumn(label: Text('Thumbail Berita/Kegiatan')),
+                    DataColumn(label: Text('Judul dan Waktu')),
+                    DataColumn(label: Text('Aksi')),
+                  ],
+                );
+              }
+              return const Center(
+                  child: Text("Anda belum pernah membat berita atau kegiatan"));
+            },
           ),
         ],
       ),
