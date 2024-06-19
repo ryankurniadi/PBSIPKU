@@ -113,8 +113,8 @@ class Beranda extends StatelessWidget {
                   itemBuilder: (context, index) {
                     Berita data = beritaC.dataBeritaAdmin[index];
                     String isiBerita = data.isi!;
-                    if(isiBerita.length >= 750){
-                      isiBerita = "${isiBerita.substring(0, 750)}...";
+                    if(isiBerita.length >= 600){
+                      isiBerita = "${isiBerita.substring(0, 600)}...";
                     }
                     return Column(
                       children: [
@@ -206,7 +206,7 @@ class Beranda extends StatelessWidget {
                               const SizedBox(
                                   height: 3,
                                 ),
-                              if(data.isi!.length >= 750)
+                              if(data.isi!.length >= 600)
                               InkWell(onTap: (){}, child: const Text("Baca Selengkapanya...." , style: TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold

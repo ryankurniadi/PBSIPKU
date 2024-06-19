@@ -101,6 +101,7 @@ class BeritaController extends GetxController {
   }
 
   addBerita(Uint8List? image) async {
+    
     statusupload.value = true;
     final ref = db.collection(table).withConverter(
         fromFirestore: Berita.fromFirestore,
@@ -143,6 +144,7 @@ class BeritaController extends GetxController {
       imageBytes.value = Uint8List(0);
       getData();
       getBeritaPerAdmin();
+      isi.value = "";
     } catch (e) {
       loadC.changeLoading(false);
       print(e);
@@ -222,11 +224,12 @@ class BeritaController extends GetxController {
         await refs.delete();
       }
       await ref.doc(id).delete();
+      await getBeritaPerAdmin();
+      await getData();
       Get.back();
       Get.snackbar("Berhasil", "Data Berhasil Di Hapus",
           backgroundColor: Colors.green);
-      getBeritaPerAdmin();
-      getData();
+      
     } catch (e) {
       Get.snackbar("Gagal", "Data Gagal Di Hapus", backgroundColor: Colors.red);
       print(e);
