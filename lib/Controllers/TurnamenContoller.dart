@@ -31,6 +31,7 @@ class TurnamenController extends GetxController {
   var dataTurnamen = [].obs;
   var dataTurnamen2 = [].obs;
   var date = DateTime.now().obs;
+  var biaya = 0.obs;
   var date2 = DateTime.now().obs;
   var dateShow = "".obs;
   var dateShow2 = "".obs;
@@ -72,6 +73,7 @@ class TurnamenController extends GetxController {
             level: docSnap.docs[i].data().level,
             batas: docSnap.docs[i].data().batas,
             pbsi: docSnap.docs[i].data().pbsi,
+            biaya: docSnap.docs[i].data().biaya,
             tipe: docSnap.docs[i].data().tipe,
             limit: docSnap.docs[i].data().limit,
             lokasi: docSnap.docs[i].data().lokasi,
@@ -101,6 +103,7 @@ class TurnamenController extends GetxController {
             id: docSnap.docs[i].id,
             nama: docSnap.docs[i].data().nama,
             img: docSnap.docs[i].data().img,
+            biaya: docSnap.docs[i].data().biaya,
             ket: docSnap.docs[i].data().ket,
             status: docSnap.docs[i].data().status,
             date: docSnap.docs[i].data().date,
@@ -145,6 +148,7 @@ class TurnamenController extends GetxController {
           level: level.value,
           tipe: "Publik",
           img: link.value,
+          biaya: biaya.value,
           kontak: kontak.value,
           pbsi: pbsi.value,
           limit: limit.value,
@@ -215,6 +219,7 @@ class TurnamenController extends GetxController {
         'ket': ket.value,
         'level': level.value,
         'kontak':kontak.value,
+        'biaya':biaya.value,
         'img': link.value,
         'limit':limit.value,
         'batas': date2.value,
@@ -222,7 +227,7 @@ class TurnamenController extends GetxController {
       });
       loadC.changeLoading(false);
       Get.back();
-      Get.snackbar("Berhasil", "Data Berhasil Di tambah",
+      Get.snackbar("Berhasil", "Data Berhasil Di Perbaharui",
           backgroundColor: Colors.green);
       await getData();
       imageBytes.value = Uint8List(0);
@@ -230,12 +235,12 @@ class TurnamenController extends GetxController {
     } catch (e) {
       isEditImg.value = false;
       loadC.changeLoading(false);
-      Get.snackbar("Gagal", "Data Gagal Di Tambah",
+      Get.snackbar("Gagal", "Data Gagal Di Perbaharui",
           backgroundColor: Colors.red);
     }
   }
 
-  void deleteData(String id, String img) async {
+  deleteData(String id, String img) async {
     try {
       Reference ref = FirebaseStorage.instance.refFromURL(img);
       await db.collection(table).doc(id).delete();
@@ -321,9 +326,13 @@ class TurnamenController extends GetxController {
       final docSnap = await ref.doc(turID.value).get();
       setDate(docSnap['date'].toDate());
       setDate2(docSnap['batas'].toDate());
+
+      date.value = docSnap['date'].toDate();
+      date2.value = docSnap['batas'].toDate();
       dataSatuTur.add(Turnamen(
         nama: docSnap['nama'],
         level: docSnap['level'],
+        biaya: docSnap['biaya'],
         lokasi: docSnap['lokasi'],
         img: docSnap['img'],
         limit: docSnap['limit'],

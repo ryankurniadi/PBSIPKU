@@ -35,6 +35,9 @@ class BeritaController extends GetxController {
   var penulis = "".obs;
   var isImg = false.obs;
 
+  var isNewImg = false.obs;
+
+  var idBerita = "".obs;
   Future<void> pickImage() async {
     try {
       final FileUploadInputElement input = FileUploadInputElement();
@@ -49,6 +52,7 @@ class BeritaController extends GetxController {
         });
 
         reader.readAsArrayBuffer(file);
+        isNewImg.value = true;
       });
     } catch (e) {
       print(e);
@@ -63,8 +67,13 @@ class BeritaController extends GetxController {
 
     try {
       var data = await ref.orderBy('date', descending: true).limit(7).get();
-      if(authC.authpbsi.value != ""){
-        data = await ref.where('penulis'.toString(), whereIn: ['${authC.authpbsi.value}', 'PBSI Pusat']).orderBy('date', descending: true).limit(7).get();
+      if (authC.authpbsi.value != "") {
+        data = await ref
+            .where('penulis'.toString(),
+                whereIn: ['${authC.authpbsi.value}', 'PBSI Pusat'])
+            .orderBy('date', descending: true)
+            .limit(7)
+            .get();
       }
       if (data.docs.isNotEmpty) {
         totalBeritaAdmin.value = data.docs.length;
@@ -101,7 +110,6 @@ class BeritaController extends GetxController {
   }
 
   addBerita(Uint8List? image) async {
-    
     statusupload.value = true;
     final ref = db.collection(table).withConverter(
         fromFirestore: Berita.fromFirestore,
@@ -151,6 +159,45 @@ class BeritaController extends GetxController {
     }
   }
 
+  editBerita(String id, Uint8List? image) async {
+    statusupload.value = true;
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+    try {
+      if (isImg.value) {
+        try {
+          await uploadImg(image!);
+          if (!statusupload.value) {
+            throw Exception('No Image');
+          }
+        } catch (e) {
+          print(e);
+          loadC.changeLoading(false);
+          Get.snackbar("Gagal", "Error Pada Gambar",
+              backgroundColor: Colors.red);
+        }
+      }
+      await ref.doc(id).update({
+        "judul" : judul.value,
+        "isi" : isi.value,
+        "img" : img.value,
+      });
+
+      loadC.changeLoading(false);
+      Get.back();
+      Get.snackbar("Berhasil", "Data Berhasil Di tambah",
+          backgroundColor: Colors.green);
+      imageBytes.value = Uint8List(0);
+      getData();
+      getBeritaPerAdmin();
+      isi.value = "";
+    } catch (e) {
+      loadC.changeLoading(false);
+      print(e);
+    }
+  }
+
   uploadImg(Uint8List imageData) async {
     try {
       if (imageBytes.value != null && imageBytes.value!.isNotEmpty) {
@@ -159,6 +206,13 @@ class BeritaController extends GetxController {
             .child('/Berita')
             .child("${DateTime.now().microsecondsSinceEpoch}.png");
         await ref.putData(imageData);
+        if (isNewImg.value) {
+          if (img.value != imgDefault) {
+            Reference refs = FirebaseStorage.instance.refFromURL(img.value);
+            await refs.delete();
+          }
+        }
+
         String downloadURL = await ref.getDownloadURL();
         img.value = downloadURL;
       } else {
@@ -229,9 +283,25 @@ class BeritaController extends GetxController {
       Get.back();
       Get.snackbar("Berhasil", "Data Berhasil Di Hapus",
           backgroundColor: Colors.green);
-      
     } catch (e) {
       Get.snackbar("Gagal", "Data Gagal Di Hapus", backgroundColor: Colors.red);
+      print(e);
+    }
+  }
+
+  getSingleBerita(String id) async {
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+    try {
+      final data = await ref.doc(id).get();
+      img.value = data.data()!.img!;
+      penulis.value = data.data()!.penulis!;
+      judul.value = data.data()!.judul!;
+      isi.value = data.data()!.isi!;
+      idBerita.value = id;
+      update();
+    } catch (e) {
       print(e);
     }
   }

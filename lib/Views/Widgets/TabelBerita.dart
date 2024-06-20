@@ -15,7 +15,7 @@ class TabelBerita extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => beritaC.totalDataPerAdmin.value;
+  int get rowCount => beritaC.dataPerAdmin.length;
 
   @override
   int get selectedRowCount => 0;
@@ -77,6 +77,10 @@ class TabelBerita extends DataTableSource {
               children: [
                 InkWell(
                   onTap: () async {
+                    beritaC.editImgChanger(false);
+                    beritaC.isNewImg.value = false;
+                    await beritaC.getSingleBerita(data.id!);
+                    Get.toNamed(PageNames.EditBerita);
                     //turC.turID.value = "${data.id}";
                     //await turC.getSingleTur();
                     //Get.toNamed(PageNames.EditTurnamen);

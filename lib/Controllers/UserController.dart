@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 import '../Models/User.dart';
 import './AuthController.dart';
@@ -29,6 +30,14 @@ class UserController extends GetxController {
   var hp = 0.obs;
   var pbsiname = "".obs;
 
+  var nik = 0.obs;
+  var tgl = DateTime.now().obs;
+  var dateShow = "".obs;
+  var lahir = "".obs;
+  var alamat = "".obs;
+
+  var idUser = "".obs;
+
   var isRoot = true.obs;
   User? userProfil;
 
@@ -55,7 +64,7 @@ class UserController extends GetxController {
             if (snap != null) {
               namas = snap.data()!['nama'];
             }
-          }else{
+          } else {
             namas = "Admin Pusat";
           }
           dataUser.add(User(
@@ -71,6 +80,10 @@ class UserController extends GetxController {
             level: docSnap.docs[i].data().level,
             pbsi: namas,
             skill: docSnap.docs[i].data().skill,
+            nik: docSnap.docs[i].data().nik,
+            alamat: docSnap.docs[i].data().alamat,
+            lahir: docSnap.docs[i].data().lahir,
+            tgl: docSnap.docs[i].data().tgl,
           ));
         }
       } else {
@@ -97,6 +110,10 @@ class UserController extends GetxController {
       level: level.value,
       pbsi: pbsi.value,
       skill: skill.value,
+      alamat: alamat.value,
+      lahir: lahir.value,
+      tgl: tgl.value,
+      nik: nik.value,
     );
     try {
       if (await authC.checkEmail(email.value)) {
@@ -144,7 +161,7 @@ class UserController extends GetxController {
         doc.reference.delete();
       });
 
-      getUserData();
+      await getUserData();
       Get.back();
       Get.snackbar("Berhasil", "Data Berhasil Di Hapus",
           backgroundColor: Colors.green);
@@ -174,6 +191,41 @@ class UserController extends GetxController {
       return "No Data";
     }
   }
+
+  getSingelUSerForEdit(String id)async{
+        final ref = db.collection("users").withConverter(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toFirestore());
+
+    try {
+      final data = await ref.doc(id).get();
+      
+      nama.value = data.data()!.nama!;
+      nik.value = data.data()!.nik!;
+      tgl.value = data.data()!.tgl!;
+      lahir.value = data.data()!.lahir!;
+      level.value = data.data()!.level!;
+      alamat.value = data.data()!.alamat!;
+      hp.value = data.data()!.hp!;
+      skill.value = data.data()!.skill!;
+      idUser.value = id;
+
+      if(level.value != "Root"){
+        isRoot.value = false;
+      }else{
+        isRoot.value = true;
+      }
+
+      final pbsi = await db.collection('pbsi').doc(data.data()!.pbsi).get();
+      pbsiname.value = pbsi.data()!['nama'];
+      
+      showDate(tgl.value);
+      update();
+    } catch (e) {
+      print(e);
+    }
+  }
+
 
   getSingleUser() async {
     try {
@@ -207,10 +259,21 @@ class UserController extends GetxController {
     } catch (e) {}
   }
 
+  void setDate(DateTime tgls) {
+    tgl.value = tgls;
+    showDate(tgls);
+    update();
+  }
+
+  void showDate(DateTime tgl) {
+    dateShow.value = "${DateFormat("EEEE, dd MMMM yyyy", "id").format(tgl)}";
+    update();
+  }
+
   @override
   void onInit() {
     getUserData();
-
+    showDate(DateTime.now());
     super.onInit();
   }
 }

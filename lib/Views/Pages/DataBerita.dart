@@ -24,6 +24,8 @@ class DataBerita extends StatelessWidget {
             children: [
               InkWell(
                   onTap: () {
+                    beritaC.editImgChanger(false);
+                    beritaC.isi.value = "";
                     Get.toNamed(PageNames.AddBerita);
                   },
                   child: Container(

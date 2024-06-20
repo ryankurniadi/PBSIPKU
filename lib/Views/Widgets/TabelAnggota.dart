@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Routes/PageNames.dart';
 import '../../Models/User.dart';
-import '../../Controllers/UserController.dart';
+import '../../Controllers/AnggotaController.dart';
 import '../../Controllers/AuthController.dart';
 import '../../Routes/PageNames.dart';
 
-class TabelUser extends DataTableSource {
+
+class TabelAnggota extends DataTableSource {
   final BuildContext context;
-  TabelUser(this.context);
-  final userC = Get.find<UserController>();
+  TabelAnggota(this.context);
+  final userC = Get.find<AnggotaController>();
 
   @override
   bool get isRowCountApproximate => false;
@@ -36,7 +36,7 @@ class TabelUser extends DataTableSource {
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Align(alignment: Alignment.topLeft, child: Text("${data.pbsi}")),
+        child: Align(alignment: Alignment.topLeft, child: Text((data.username != "null" ? "${data.username}" : ""))),
       )),
       DataCell(
         Align(
@@ -49,10 +49,9 @@ class TabelUser extends DataTableSource {
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    
                     IconButton(onPressed: ()async {
-                     await  userC.getSingelUSerForEdit(data.id!);
-                     Get.toNamed(PageNames.EditUser);
+                      await userC.getSingelUSer(data.id!);
+                      Get.toNamed(PageNames.EditAnggota);
                     }, icon: const Icon(Icons.edit)),
                     IconButton(
                         onPressed: () {

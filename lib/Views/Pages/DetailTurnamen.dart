@@ -70,6 +70,7 @@ class DetailTurnamen extends StatelessWidget {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
@@ -100,10 +101,15 @@ class DetailTurnamen extends StatelessWidget {
                                     width: 5,
                                   ),
                                   Container(
+                                    constraints: BoxConstraints(
+                                      maxWidth: 400,
+                                    ),
                                     decoration: BoxDecoration(
                                         color: Colors.orange,
                                         borderRadius:
-                                            BorderRadius.circular(10)),
+                                            BorderRadius.circular(10),
+                                        
+                                            ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 7, horizontal: 15),
@@ -112,6 +118,7 @@ class DetailTurnamen extends StatelessWidget {
                                             CrossAxisAlignment.center,
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
                                         children: [
                                           const FaIcon(
                                             FontAwesomeIcons.locationDot,
@@ -121,12 +128,15 @@ class DetailTurnamen extends StatelessWidget {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(
-                                            data.lokasi!,
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
+                                          Expanded(
+                                            child: Text(
+                                              data.lokasi!,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15),
+                                            ),
                                           )
                                         ],
                                       ),
@@ -272,6 +282,7 @@ class DetailTurnamen extends StatelessWidget {
                             columns: const [
                               DataColumn(label: Text('Nama Peserta')),
                               DataColumn(label: Text('Asal PBSI')),
+                              DataColumn(label: Text('Status Pembayaran')),
                               DataColumn(label: Text('Aksi')),
                             ],
                           );

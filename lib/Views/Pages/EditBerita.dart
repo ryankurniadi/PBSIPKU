@@ -7,10 +7,9 @@ import '../Widgets/LoadingBarrier.dart';
 import '../../Controllers/BeritaController.dart';
 import '../../Controllers/LoadingController.dart';
 
-class AddBerita extends StatelessWidget {
-  AddBerita({super.key});
-
-  final beritaC = Get.find<BeritaController>();
+class EditBerita extends StatelessWidget {
+  EditBerita({super.key});
+ final beritaC = Get.find<BeritaController>();
   final loadC = Get.find<LoadingController>();
   final _formKey = GlobalKey<FormState>();
   HtmlEditorController controller = HtmlEditorController();
@@ -20,7 +19,7 @@ class AddBerita extends StatelessWidget {
     var prev = beritaC.imageBytes;
     return SafeArea(
         child: Scaffold(
-      appBar: NavBar(title: "Tambah Berita"),
+      appBar: NavBar(title: "Perbaharui Berita"),
       body: LoadingBarrier(
           child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 200, vertical: 20),
@@ -42,6 +41,7 @@ class AddBerita extends StatelessWidget {
                   height: 5,
                 ),
                 TextFormField(
+                  initialValue: beritaC.judul.value,
                   decoration: const InputDecoration(
                       hintText: "Judul Berita", border: OutlineInputBorder()),
                   validator: (value) {
@@ -159,7 +159,7 @@ class AddBerita extends StatelessWidget {
                                   beritaC.editImgChanger(true);
                                 },
                                 child: Image(
-                                  image: NetworkImage('${beritaC.imgDefault}'),
+                                  image: NetworkImage('${beritaC.img.value}'),
                                 ),
                               ),
                             )),
@@ -167,34 +167,35 @@ class AddBerita extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20,),
-                InkWell(
-                  onTap: () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      loadC.changeLoading(true);
-                      if (prev.value != null) {
-                        var txt = await controller.getText();
-                        if (txt.contains('src=\"data:')) {
-                          txt =
-                              '<text removed due to base-64 data, displaying the text could cause the app to crash>';
+                 InkWell(
+                      onTap: () async {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+                        loadC.changeLoading(true);
+                        if (prev.value != null) {
+                          var txt = await controller.getText();
+                          if (txt.contains('src=\"data:')) {
+                            txt =
+                                '<text removed due to base-64 data, displaying the text could cause the app to crash>';
+                          }
+                          beritaC.isi.value = txt;
+                          beritaC.editBerita(beritaC.idBerita.value, prev.value!);
+                        } else {
+                          Get.snackbar(
+                              "Gagal", "Gambar Baner Tidak Boleh Kosong",
+                              backgroundColor: Colors.red);
                         }
-                        beritaC.isi.value = txt;
-                        beritaC.addBerita(prev.value!);
-                      } else {
-                        Get.snackbar("Gagal", "Gambar Baner Tidak Boleh Kosong",
-                            backgroundColor: Colors.red);
                       }
-                    }
-                  },
-                  child: Container(
-                    width: Get.width / 1.1,
-                    height: 60,
-                    decoration: BoxDecoration(color: Colors.green),
-                    child: const Center(
-                      child: Text("Tambah Turnamen"),
-                    ),
-                  ),
-                ),
+                    },
+                    
+                    child: Container(
+                        width: Get.width / 1.1,
+                        height: 60,
+                        decoration: BoxDecoration(color: Colors.green),
+                        child: const Center(
+                          child: Text("Perbaharui Berita"),
+                        ),
+                      ),),
               ],
             ),
           ),

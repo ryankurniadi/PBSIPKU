@@ -36,7 +36,43 @@ class TabelTurnamen extends DataTableSource {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
               ),
-              Text("${data.level}"),
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 13),
+                      child: Center(
+                        child: Text(
+                          data.level!,
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5,),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 13),
+                      child: Center(
+                        child: Text(
+                          NumberFormat.currency(locale: 'id', symbol: 'Rp. ', decimalDigits: 0).format(data.biaya!),
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         )),
@@ -64,11 +100,13 @@ class TabelTurnamen extends DataTableSource {
         DataCell(Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Align(
-              alignment: Alignment.topLeft, child: Text("${data.lokasi}")),
+              alignment: Alignment.topLeft, child: SizedBox(
+                width: 200,
+                child: Text("${data.lokasi}", maxLines: 4, overflow: TextOverflow.ellipsis,))),
         )),
         DataCell(
           Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Align(
               alignment: Alignment.topLeft,
               child: Row(
@@ -94,7 +132,9 @@ class TabelTurnamen extends DataTableSource {
                       )),
                     ),
                   ),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   InkWell(
                     onTap: () async {
                       turC.turID.value = "${data.id}";
@@ -115,7 +155,9 @@ class TabelTurnamen extends DataTableSource {
                       )),
                     ),
                   ),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   InkWell(
                       onTap: () {
                         Get.defaultDialog(
@@ -131,23 +173,22 @@ class TabelTurnamen extends DataTableSource {
                             confirm: TextButton(
                                 onPressed: () {
                                   if (!Get.isSnackbarOpen) {
-                                    turC.deleteData("${data.id}", "${data.img}");
+                                    turC.deleteData(
+                                        "${data.id}", "${data.img}");
                                   }
                                 },
                                 child: const Text("Iya")));
                       },
-                      
                       child: Container(
-                        width: 30, height: 30,
-                        decoration: const BoxDecoration(
-                          color: Colors.red
-                        ),
+                          width: 30,
+                          height: 30,
+                          decoration: const BoxDecoration(color: Colors.red),
                           child: const Center(
                               child: Icon(
-                        Icons.delete,
-                        size: 20,
-                        color: Colors.white,
-                      )))),
+                            Icons.delete,
+                            size: 20,
+                            color: Colors.white,
+                          )))),
                 ],
               ),
             ),
@@ -161,7 +202,7 @@ class TabelTurnamen extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => turC.totalTur.value;
+  int get rowCount => turC.dataTurnamen.length;
 
   @override
   int get selectedRowCount => 0;

@@ -17,7 +17,7 @@ class TabelTurnamenPBSI extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => turC.totalTur.value;
+  int get rowCount => turC.dataTurnamen.length;
 
   @override
   int get selectedRowCount => 0;
@@ -31,60 +31,143 @@ class TabelTurnamenPBSI extends DataTableSource {
           image: NetworkImage(
             data.img!,
           ),
-          width: 180,
+          width: 120,
           height: 180,
         ),
       ),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "${data.nama}",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-            ),
-            Text("${data.level}"),
-          ],
+        child: SizedBox(
+          width: 200,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "${data.nama}",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+              ),
+               const SizedBox(
+                    height: 10,
+                  ),
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 4, horizontal: 13),
+                      child: Center(
+                        child: Text(
+                          data.level!,
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 4, horizontal: 13),
+                      child: Center(
+                        child: Text(
+                          NumberFormat.currency(
+                                  locale: 'id', symbol: 'Rp. ', decimalDigits: 0)
+                              .format(data.biaya!),
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+               const SizedBox(
+                    height: 5,
+                  ),
+              Row(
+                children: [
+                  Container(
+                        
+                        decoration: BoxDecoration(
+                            color: Colors.purple,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 4, horizontal: 13),
+                          child: Center(
+                            child: Text(
+                              (data.tipe! == "Publik" ? "Publik": "Internal PBSI"),
+                              style: const TextStyle(
+                                  color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                ],
+              ),
+            ],
+          ),
         ),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Batas Pendaftaran",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-            ),
-            Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.batas!)),
-            const SizedBox(
-              height: 10,
-            ),
-            const Text(
-              "Pelaksanaan Turnamen",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-            ),
-            Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.date!)),
-          ],
+        child: SizedBox(
+          width: 180,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Batas Pendaftaran",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+              ),
+              Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.batas!)),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                "Pelaksanaan Turnamen",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+              ),
+              Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.date!)),
+            ],
+          ),
         ),
-      )),
-      DataCell(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child:
-            Align(alignment: Alignment.topLeft, child: Text("${data.lokasi}")),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Align(
             alignment: Alignment.topLeft,
-            child: Text(
-              "${data.status}",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: (data.status == "Disetujui"
-                    ? Colors.green
-                    : (data.status == "Pending" ? Colors.amber : Colors.red)),
+            child: SizedBox(
+                width: 150,
+                child: Text(
+                  "${data.lokasi}",
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ))),
+      )),
+      DataCell(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: 70,
+              child: Text(
+                "${data.status}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: (data.status == "Disetujui"
+                      ? Colors.green
+                      : (data.status == "Pending" ? Colors.amber : Colors.red)),
+                ),
               ),
             )),
       )),
@@ -124,8 +207,8 @@ class TabelTurnamenPBSI extends DataTableSource {
                         InkWell(
                           onTap: () async {
                             turC.turID.value = "${data.id}";
-                            //await turC.getSingleTur();
-                            //Get.toNamed(PageNames.EditTurnamen);
+                            await turC.getSingleTur();
+                            Get.toNamed(PageNames.EditTurnamenPBSI);
                           },
                           child: Container(
                             width: 30,
@@ -144,7 +227,7 @@ class TabelTurnamenPBSI extends DataTableSource {
                         const SizedBox(
                           width: 10,
                         ),
-                        (data.status == "Disetujui"
+                        (data.status == "Disetujui" && data.tipe == "Publik"
                             ? const SizedBox()
                             : InkWell(
                                 onTap: () {
@@ -159,8 +242,12 @@ class TabelTurnamenPBSI extends DataTableSource {
                                           },
                                           child: const Text("Tidak")),
                                       confirm: TextButton(
-                                          onPressed: () {
-                                            if (!Get.isSnackbarOpen) {}
+                                          onPressed: () async{
+                                            
+                                            if (!Get.isSnackbarOpen) {
+                                              await turAsliC.deleteData(data.id!, data.img!);
+                                              turC.getData();
+                                            }
                                           },
                                           child: const Text("Iya")));
                                 },

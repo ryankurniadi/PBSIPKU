@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../Views/Pages/EditBerita.dart';
+import '../Views/Pages/EditUser.dart';
 import './PageNames.dart';
 import '../Middleware/AuthMiddleware.dart';
 import '../Middleware/LoginMiddleware.dart';
@@ -20,6 +22,7 @@ import '../Views/Pages/DataTurnamen.dart';
 import '../Views/Pages/EditTurnamen.dart';
 import '../Views/Pages/AjukanTurnamen.dart';
 import '../Views/Pages/DetailTurnamen.dart';
+import '../Views/Pages/EditTurPBSI.dart';
 
 import '../Views/Pages/DataBerita.dart';
 import '../Views/Pages/AddBerita.dart';
@@ -29,6 +32,7 @@ import '../Views/Pages/AddUser.dart';
 
 import '../Views/Pages/DataAnggota.dart';
 import '../Views/Pages/AddAnggota.dart';
+import '../Views/Pages/EditAnggota.dart';
 
 
 import '../Views/Pages/Profil.dart';
@@ -118,6 +122,12 @@ class PageRoutes {
         ],
         page: () => Ajukanturnamen()),
     GetPage(
+        name: PageNames.EditTurnamenPBSI,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => EditTurPBSI()),
+    GetPage(
         name: PageNames.DetailTurnamen,
         middlewares: [
           AuthMiddleware(),
@@ -137,6 +147,12 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => AddBerita()),
+    GetPage(
+        name: PageNames.EditBerita,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => EditBerita()),
 
     //Users
     GetPage(
@@ -151,6 +167,12 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => AddUser()),
+    GetPage(
+        name: PageNames.EditUser,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => EditUser()),
 
     //Manajemen PBSI
     GetPage(
@@ -165,5 +187,11 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => AddAnggota()),
+    GetPage(
+        name: PageNames.EditAnggota,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => EditAnggota()),
   ];
 }

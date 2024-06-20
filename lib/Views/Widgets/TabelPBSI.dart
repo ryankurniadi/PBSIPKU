@@ -25,6 +25,7 @@ class PBSISource extends DataTableSource {
                   Get.toNamed(PageNames.EditPBSI);
                   pbsiC.id.value = "${data.id}";
                   pbsiC.nama.value = "${data.nama}";
+                  pbsiC.alamat.value = "${data.alamat}";
                 },
                 icon: const Icon(
                   Icons.edit,
@@ -64,7 +65,7 @@ class PBSISource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => pbsiC.totalPBSI.value;
+  int get rowCount => pbsiC.dataPBSI.length;
 
   @override
   int get selectedRowCount => 0;

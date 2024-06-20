@@ -7,9 +7,10 @@ import '../../Controllers/AnggotaController.dart';
 import '../../Controllers/LoadingController.dart';
 import '../Widgets/NavBar.dart';
 
-class AddAnggota extends StatelessWidget {
-  AddAnggota({super.key});
-  final _formKey = GlobalKey<FormState>();
+class EditAnggota extends StatelessWidget {
+  EditAnggota({super.key});
+
+   final _formKey = GlobalKey<FormState>();
   final userC = Get.find<AnggotaController>();
 
   Future<void> _datePick(BuildContext context) async {
@@ -30,8 +31,8 @@ class AddAnggota extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: NavBar(title: "Tambah Anggota PBSI"),
+return Scaffold(
+      appBar: NavBar(title: "Perbaharui Data Anggota"),
       body: GetBuilder<LoadingController>(builder: (loadC) {
         return SingleChildScrollView(
           padding:
@@ -58,6 +59,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: userC.nama.value,
                         decoration:
                             const InputDecoration(border: OutlineInputBorder()),
                         validator: (value) {
@@ -85,6 +87,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: "${userC.nik.value}",
                         keyboardType:
                             TextInputType.number, // Keyboard type untuk angka
                         inputFormatters: <TextInputFormatter>[
@@ -119,6 +122,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: userC.alamat.value,
                         decoration:
                             const InputDecoration(border: OutlineInputBorder()),
                         validator: (value) {
@@ -146,6 +150,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: userC.lahir.value,
                         decoration:
                             const InputDecoration(border: OutlineInputBorder()),
                         validator: (value) {
@@ -199,6 +204,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: "${userC.hp.value}",
                         keyboardType:
                             TextInputType.number, // Keyboard type untuk angka
                         inputFormatters: <TextInputFormatter>[
@@ -215,37 +221,6 @@ class AddAnggota extends StatelessWidget {
                         onSaved: (value) {
                           int noHP = int.parse(value!);
                           userC.hp.value = noHP;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Row(
-                        children: [
-                          Text(
-                            "E-mail",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 17),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        decoration:
-                            const InputDecoration(border: OutlineInputBorder()),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "E-mail Wajib Di Isi";
-                          }
-                          if (!EmailValidator.validate(value)) {
-                            return "Format E-mail Tidak Valid";
-                          }
-                        },
-                        onSaved: (value) {
-                          userC.email.value = value!;
                         },
                       ),
                       const SizedBox(
@@ -284,7 +259,7 @@ class AddAnggota extends StatelessWidget {
                             child: Text("Level D"),
                           )
                         ],
-                        value: "Level D",
+                        value: userC.skill.value,
                         onChanged: (value) {
                           userC.skill.value = value!;
                         },
@@ -294,7 +269,7 @@ class AddAnggota extends StatelessWidget {
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                         userC.addAnggota();
+                         userC.editUser(userC.idUser.value);
                         }
                       },
                       child: Container(
@@ -302,7 +277,7 @@ class AddAnggota extends StatelessWidget {
                         height: 60,
                         decoration: BoxDecoration(color: Colors.green),
                         child: const Center(
-                          child: Text("Tambah Anggota"),
+                          child: Text("Perbaharui Data Anggota"),
                         ),
                       ),
                     ),

@@ -9,6 +9,7 @@ class PBSIController extends GetxController {
   var dataPBSI = [].obs;
   var totalPBSI = 0.obs;
   var nama = "".obs;
+  var alamat = "".obs;
   var id = "".obs;
 
   void getData() async {
@@ -22,7 +23,10 @@ class PBSIController extends GetxController {
         dataPBSI.clear();
         for (var i = 0; i < docSnap.docs.length; i++) {
           dataPBSI.add(
-              PBSI(nama: docSnap.docs[i].data().nama, id: docSnap.docs[i].id));
+              PBSI(
+                nama: docSnap.docs[i].data().nama, 
+                alamat: docSnap.docs[i].data().alamat, 
+                id: docSnap.docs[i].id));
         }
       } else {
         totalPBSI.value = 0;
@@ -35,7 +39,7 @@ class PBSIController extends GetxController {
   }
 
   void addData() async {
-    final pbsi = PBSI(nama: nama.value);
+    final pbsi = PBSI(nama: nama.value, alamat: alamat.value);
     final ref = db.collection("pbsi").withConverter(
         fromFirestore: PBSI.fromFirestore,
         toFirestore: (PBSI pbsi, _) => pbsi.toFirestore());
@@ -67,6 +71,7 @@ class PBSIController extends GetxController {
     try {
       await db.collection('pbsi').doc(id).update({
         'nama': nama.value,
+        'alamat':alamat.value
       });
       getData();
       Get.back();

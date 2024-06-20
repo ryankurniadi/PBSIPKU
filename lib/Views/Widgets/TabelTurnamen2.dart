@@ -36,35 +36,82 @@ class TabelTurnamen2 extends DataTableSource {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
               ),
-              Text("${data.level}"),
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 13),
+                      child: Center(
+                        child: Text(
+                          data.level!,
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 13),
+                      child: Center(
+                        child: Text(
+                          NumberFormat.currency(
+                                  locale: 'id',
+                                  symbol: 'Rp. ',
+                                  decimalDigits: 0)
+                              .format(data.biaya!),
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         )),
         DataCell(Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Batas Pendaftaran",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-              ),
-              Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.batas!)),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text(
-                "Pelaksanaan Turnamen",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-              ),
-              Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.date!)),
-            ],
+          child: SizedBox(
+            width: 150,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Batas Pendaftaran",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.batas!)),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Pelaksanaan Turnamen",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                Text(DateFormat('EEEE, dd MMMM yyyy', 'id').format(data.date!)),
+              ],
+            ),
           ),
         )),
         DataCell(Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Align(
-              alignment: Alignment.topLeft, child: Text("${data.lokasi}")),
+              alignment: Alignment.topLeft, child: SizedBox(
+                width: 150,
+                child: Text("${data.lokasi}", maxLines: 4, overflow: TextOverflow.ellipsis,))),
         )),
         DataCell(
           Padding(
@@ -118,7 +165,7 @@ class TabelTurnamen2 extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => turC.ajutotalTur.value;
+  int get rowCount => turC.dataTurnamen2.length;
 
   @override
   int get selectedRowCount => 0;

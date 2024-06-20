@@ -1,16 +1,20 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:email_validator/email_validator.dart';
 
-import '../../Controllers/AnggotaController.dart';
-import '../../Controllers/LoadingController.dart';
 import '../Widgets/NavBar.dart';
+import '../../Models/PBSI.dart';
+import '../../Controllers/UserController.dart';
+import '../../Controllers/PBSIController.dart';
+import '../../Controllers/LoadingController.dart';
 
-class AddAnggota extends StatelessWidget {
-  AddAnggota({super.key});
+class EditUser extends StatelessWidget {
+  EditUser({super.key});
+
   final _formKey = GlobalKey<FormState>();
-  final userC = Get.find<AnggotaController>();
+
+  final userC = Get.find<UserController>();
 
   Future<void> _datePick(BuildContext context) async {
     DateTime? datepick = await showDatePicker(
@@ -31,12 +35,12 @@ class AddAnggota extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NavBar(title: "Tambah Anggota PBSI"),
+      appBar: NavBar(title: "Perbaharui Data User"),
       body: GetBuilder<LoadingController>(builder: (loadC) {
         return SingleChildScrollView(
           padding:
               EdgeInsets.symmetric(horizontal: Get.width / 7, vertical: 20),
-          child: GetBuilder<AnggotaController>(builder: (userC) {
+          child: GetBuilder<UserController>(builder: (userC) {
             return Form(
               key: _formKey,
               child: Card(
@@ -58,6 +62,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: userC.nama.value,
                         decoration:
                             const InputDecoration(border: OutlineInputBorder()),
                         validator: (value) {
@@ -85,6 +90,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: "${userC.nik.value}",
                         keyboardType:
                             TextInputType.number, // Keyboard type untuk angka
                         inputFormatters: <TextInputFormatter>[
@@ -119,6 +125,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: userC.alamat.value,
                         decoration:
                             const InputDecoration(border: OutlineInputBorder()),
                         validator: (value) {
@@ -146,6 +153,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: userC.lahir.value,
                         decoration:
                             const InputDecoration(border: OutlineInputBorder()),
                         validator: (value) {
@@ -199,6 +207,7 @@ class AddAnggota extends StatelessWidget {
                         height: 5,
                       ),
                       TextFormField(
+                        initialValue: "${userC.hp.value}",
                         keyboardType:
                             TextInputType.number, // Keyboard type untuk angka
                         inputFormatters: <TextInputFormatter>[
@@ -220,41 +229,11 @@ class AddAnggota extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
+                     
                       const Row(
                         children: [
                           Text(
-                            "E-mail",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 17),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        decoration:
-                            const InputDecoration(border: OutlineInputBorder()),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "E-mail Wajib Di Isi";
-                          }
-                          if (!EmailValidator.validate(value)) {
-                            return "Format E-mail Tidak Valid";
-                          }
-                        },
-                        onSaved: (value) {
-                          userC.email.value = value!;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Row(
-                        children: [
-                          Text(
-                            "Level Pemain",
+                            "Level User",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17),
                           ),
@@ -265,47 +244,88 @@ class AddAnggota extends StatelessWidget {
                       ),
                       DropdownButtonFormField(
                         decoration:
-                            InputDecoration(border: OutlineInputBorder()),
+                            const InputDecoration(border: OutlineInputBorder()),
+                        value: userC.level.value,
+                        onSaved: (value) {
+                          userC.level.value = value!;
+                        },
+                        onChanged: (value) {
+                          userC.level.value = value!;
+                          if (value! == "Admin PBSI") {
+                            userC.levelUserChanger(false);
+                          } else {
+                            userC.levelUserChanger(true);
+                          }
+                        },
                         items: const [
                           DropdownMenuItem(
-                            value: "Level A",
-                            child: Text("Level A"),
+                            value: "Root",
+                            child: Text("Admin Sistem/Root"),
                           ),
                           DropdownMenuItem(
-                            value: "Level B",
-                            child: Text("Level B"),
+                            value: "Admin PBSI",
+                            child: Text("Admin PBSI"),
                           ),
-                          DropdownMenuItem(
-                            value: "Level C",
-                            child: Text("Level C"),
-                          ),
-                          DropdownMenuItem(
-                            value: "Level D",
-                            child: Text("Level D"),
-                          )
                         ],
-                        value: "Level D",
-                        onChanged: (value) {
-                          userC.skill.value = value!;
-                        },
                       ),
-                      const SizedBox(height: 20,),
-                     InkWell(
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                         userC.addAnggota();
-                        }
-                      },
-                      child: Container(
-                        width: Get.width / 1.1,
-                        height: 60,
-                        decoration: BoxDecoration(color: Colors.green),
-                        child: const Center(
-                          child: Text("Tambah Anggota"),
+                      (!userC.isRoot.value
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const Row(
+                                  children: [
+                                    Text(
+                                      "Pilih PBSI",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                GetBuilder<PBSIController>(builder: (pbsiC) {
+                                  return DropdownButtonFormField(
+                                    
+                                    decoration: const InputDecoration(
+                                        border: OutlineInputBorder()),
+                                    hint: const Text("Pilih PBSI"),
+                                    onChanged: (value) {
+                                      userC.pbsi.value = value!;
+                                    },
+                                    items: List<DropdownMenuItem>.generate(
+                                        pbsiC.totalPBSI.value, (index) {
+                                      PBSI data = pbsiC.dataPBSI[index];
+                                      return DropdownMenuItem(
+                                        value: "${data.id}",
+                                        child: Text("${data.nama}"),
+                                      );
+                                    }),
+                                  );
+                                }),
+                              ],
+                            )
+                          : const SizedBox()),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            userC.addUser();
+                          }
+                        },
+                        child: Container(
+                          width: Get.width / 1.1,
+                          height: 60,
+                          decoration: BoxDecoration(color: Colors.green),
+                          child: const Center(
+                            child: Text("Tambah User"),
+                          ),
                         ),
                       ),
-                    ),
                     ],
                   ),
                 ),

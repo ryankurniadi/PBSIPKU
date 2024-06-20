@@ -176,7 +176,8 @@ class Ajukanturnamen extends StatelessWidget {
                               ),
                               GetBuilder<PBSITurController>(
                                 builder: (inputC) {
-                                  if (inputC.tipeRadio.value == "Publik") {
+                                  //if (inputC.tipeRadio.value == "Publik") {
+                                  if (inputC.tipeRadio.value != "ikan") {
                                     return Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -274,6 +275,42 @@ class Ajukanturnamen extends StatelessWidget {
 
                                   return const SizedBox();
                                 },
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Biaya Pendaftaran",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextFormField(
+                                keyboardType: TextInputType
+                                    .number, // Keyboard type untuk angka
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter
+                                      .digitsOnly // Formatter untuk angka saja
+                                ],
+                                decoration: const InputDecoration(
+                                    hintText: "Biaya Pendaftaran",
+                                    border: OutlineInputBorder()),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Data Wajib Di Isi";
+                                  }
+                                },
+                                onSaved: (value) {
+                                  int biaya = int.parse(value!);
+                                  turC.biaya.value = biaya;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 10,
                               ),
                               const Row(
                                 children: [

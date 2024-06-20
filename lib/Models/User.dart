@@ -12,14 +12,23 @@ class User{
   String? skill;
   String? img;
   String? token;
+  String? alamat;
+  String? lahir;
   int? hp;
+  int? nik;
+  DateTime? tgl;
+
 
   User({
     this.id,
     this.token,
     this.nama,
+    this.lahir,
+    this.nik,
+    this.tgl,
     this.level,
     this.img,
+    this.alamat,
     this.email,
     this.hp,
     this.pbsi,
@@ -37,6 +46,10 @@ class User{
     return User(
       id: snapshot.id,
       nama: data?['nama'],
+      tgl: data?['tgl'].toDate(),
+      nik: data?['nik'],
+      alamat: data?['alamat'],
+      lahir: data?['lahir'],
       email: data?['email'],
       token: data?['token'],
       hp: data?['hp'],
@@ -55,6 +68,10 @@ class User{
     return {
       if (nama != null) 'nama' : nama,
       if (id != null) 'id' : id,
+      if (nik != null) 'nik' : nik,
+      if (tgl != null) 'tgl' : tgl,
+      if (alamat != null) 'alamat' : alamat,
+      if (lahir != null) 'lahir' : lahir,
       if (email != null) 'email' : email,
       if (hp  != null) 'hp' : hp,
       if (username  != null) 'username' : username,

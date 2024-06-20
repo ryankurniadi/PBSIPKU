@@ -27,6 +27,7 @@ class PBSITurController extends GetxController {
   var totalTur = 0.obs;
   var ajutotalTur = 0.obs;
   var limit = 0.obs;
+  var biaya = 0.obs;
   var tipe = "Publik".obs;
   var pbsi = "".obs;
   var dataTurnamen = [].obs;
@@ -70,6 +71,7 @@ class PBSITurController extends GetxController {
             ket: docSnap.docs[i].data().ket,
             status: docSnap.docs[i].data().status,
             date: docSnap.docs[i].data().date,
+            biaya: docSnap.docs[i].data().biaya,
             level: docSnap.docs[i].data().level,
             batas: docSnap.docs[i].data().batas,
             pbsi: docSnap.docs[i].data().pbsi,
@@ -100,10 +102,12 @@ class PBSITurController extends GetxController {
       }
       String? stat;
 
-      if (tipe.value == "Publik") {
+      if (tipeRadio.value == "Publik") {
         stat = "Pending";
       } else {
+        limit.value = 9999;
         stat = "Disetujui";
+        tipeRadio.value = authC.authpbsi.value;
       }
       await ref.add(
         Turnamen(
@@ -116,6 +120,7 @@ class PBSITurController extends GetxController {
           img: link.value,
           kontak: kontak.value,
           pbsi: pbsi.value,
+          biaya: biaya.value,
           limit: limit.value,
           batas: date2.value,
           lokasi: lokasi.value,
@@ -125,7 +130,7 @@ class PBSITurController extends GetxController {
       Get.back();
       Get.snackbar("Berhasil", "Pengajuan Berhasil Didaftarkan",
           backgroundColor: Colors.green);
-      //await getData();
+      await getData();
       imageBytes.value = Uint8List(0);
     } catch (e) {
       loadC.changeLoading(false);
@@ -134,6 +139,55 @@ class PBSITurController extends GetxController {
     }
   }
 
+  editData(Uint8List? image) async {
+    loadC.changeLoading(true);
+    Turnamen data = dataSatuTur[0];
+    statusupload.value = true;
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Turnamen.fromFirestore,
+        toFirestore: (Turnamen turnamen, _) => turnamen.toFirestore());
+    link.value = data.img!;
+    //print(image);
+    if (isEditImg.value) {
+      //print("Kesini");
+      try {
+        await uploadImg(image!);
+        if (!statusupload.value) {
+          throw Exception('No Image');
+        }
+      } catch (e) {
+        print(e);
+        loadC.changeLoading(false);
+        Get.snackbar("Gagal", "Error Pada Gambar", backgroundColor: Colors.red);
+      }
+    }
+
+    try {
+      await ref.doc(turID.value).update({
+        'nama': nama.value,
+        'date': date.value,
+        'ket': ket.value,
+        'kontak':kontak.value,
+        'biaya':biaya.value,
+        'img': link.value,
+        'limit':limit.value,
+        'batas': date2.value,
+        'lokasi': lokasi.value,
+      });
+      loadC.changeLoading(false);
+      Get.back();
+      Get.snackbar("Berhasil", "Data Berhasil Di Perbaharui",
+          backgroundColor: Colors.green);
+      await getData();
+      imageBytes.value = Uint8List(0);
+      isEditImg.value = false;
+    } catch (e) {
+      isEditImg.value = false;
+      loadC.changeLoading(false);
+      Get.snackbar("Gagal", "Data Gagal Di Perbaharui",
+          backgroundColor: Colors.red);
+    }
+  }
   uploadImg(Uint8List imageData) async {
     try {
       if (imageBytes.value != null && imageBytes.value!.isNotEmpty) {
@@ -163,13 +217,13 @@ class PBSITurController extends GetxController {
     update();
   }
 
-  void setDate(DateTime tgl) {
+  setDate(DateTime tgl) {
     date.value = tgl;
     showDate(tgl);
     update();
   }
 
-  void setDate2(DateTime tgl) {
+  setDate2(DateTime tgl) {
     date2.value = tgl;
     showDate2(tgl);
     update();
@@ -202,7 +256,40 @@ class PBSITurController extends GetxController {
     update();
   }
 
-  
+  getSingleTur() async {
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Turnamen.fromFirestore,
+        toFirestore: (Turnamen turnamen, _) => turnamen.toFirestore());
+    try {
+      dataSatuTur.clear();
+      final docSnap = await ref.doc(turID.value).get();
+      await setDate(docSnap['date'].toDate());
+      await setDate2(docSnap['batas'].toDate());
+      dataSatuTur.add(Turnamen(
+        nama: docSnap['nama'],
+        level: docSnap['level'],
+        biaya: docSnap['biaya'],
+        lokasi: docSnap['lokasi'],
+        img: docSnap['img'],
+        tipe: docSnap['tipe'],
+        limit: docSnap['limit'],
+        batas: docSnap['batas'].toDate(),
+        date: docSnap['date'].toDate(),
+        ket: docSnap['ket'],
+        kontak: docSnap['kontak'],
+        pbsi: docSnap['pbsi'],
+        status: docSnap['status'],
+      ));
+      update();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  editImgchange(bool val) {
+    isEditImg.value = val;
+    update();
+  }
 
   @override
   void onInit() {

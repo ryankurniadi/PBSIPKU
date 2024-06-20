@@ -13,7 +13,9 @@ class EditPBSI extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar:  NavBar(title: "Data PBSI Pekanbaru",),
+        appBar: NavBar(
+          title: "Data PBSI Pekanbaru",
+        ),
         body: ListView(
           children: [
             const Center(
@@ -26,36 +28,88 @@ class EditPBSI extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: Get.width / 3),
               child: Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      initialValue: pbsiC.nama.value,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Wajib Di Isi";
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        pbsiC.nama.value = value!;
-                      },
-                      decoration: InputDecoration(
-                          hintText: "Nama PBSI", label: Text("Nama PBSI")),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 70, vertical: 50),
+                    child: Column(
+                      children: [
+                        const Row(
+                          children: [
+                            Text(
+                              "Nama PBSI",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormField(
+                          initialValue: pbsiC.nama.value,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder()),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Nama Wajib Di Isi";
+                            }
+                          },
+                          onSaved: (value) {
+                            pbsiC.nama.value = value!;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Row(
+                          children: [
+                            Text(
+                              "Alamat",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormField(
+                          initialValue: pbsiC.alamat.value,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder()),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Alamat Wajib Di Isi";
+                            }
+                          },
+                          onSaved: (value) {
+                            pbsiC.alamat.value = value!;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
 
-                            pbsiC.editData(pbsiC.id.value);
-                            
-                          }
-                        },
-                        child: const Text("Perbaharui Data DATA"))
-                  ],
+                              pbsiC.editData(pbsiC.id.value);
+                            }
+                          },
+                          child: Container(
+                            width: Get.width / 1.1,
+                            height: 60,
+                            decoration: BoxDecoration(color: Colors.green),
+                            child: const Center(
+                              child: Text("Perbaharui Data PBSI"),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),

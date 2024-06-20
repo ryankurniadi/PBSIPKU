@@ -32,7 +32,6 @@ class DataTurnamenPBSI extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    
     return SafeArea(
       child: Scaffold(
           appBar: NavBar(title: "Data Turnamen PBSI"),
@@ -44,6 +43,10 @@ class DataTurnamenPBSI extends StatelessWidget {
                   children: [
                     InkWell(
                         onTap: () {
+                          turC.date.value = DateTime.now();
+                          turC.date2.value = DateTime.now();
+                          turC.setDate(DateTime.now());
+                          turC.setDate2(DateTime.now());
                           Get.toNamed(PageNames.AjukanTurnamen);
                         },
                         child: Container(
@@ -136,7 +139,7 @@ class DataPeserta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pesertaC = Get.find<PesertaTurController>();
-  final authC = Get.find<AuthController>();
+    final authC = Get.find<AuthController>();
     pesertaC.getDataPBSI(authC.authpbsi.value);
     return GetBuilder<PesertaTurController>(
       builder: (pesertaC) {
@@ -145,13 +148,16 @@ class DataPeserta extends StatelessWidget {
             child: PaginatedDataTable(
               source: TabelPeserta(context),
               header: const Text("Pengajuan Turnamen"),
-              rowsPerPage: (pesertaC.totalPeserta.value >= 7 ? 7 : pesertaC.totalPeserta.value),
+              rowsPerPage: (pesertaC.totalPeserta.value >= 7
+                  ? 7
+                  : pesertaC.totalPeserta.value),
               showFirstLastButtons: true,
               showEmptyRows: false,
               dataRowMaxHeight: 150,
               columns: const [
                 DataColumn(label: Text('Nama Pemain')),
-                DataColumn(label: Text('Nama Turnamen dan Level')),
+                DataColumn(label: Text('Benner Turnamen')),
+                DataColumn(label: Text('Keterangan Turnamen')),
                 DataColumn(label: Text('Status Pengajuan')),
                 DataColumn(label: Text('Aksi')),
               ],

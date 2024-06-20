@@ -51,6 +51,7 @@ class PesertaTerdaftarController extends GetxController {
             level: tur.data()!['level'],
             namaPBSI: pbsi.data()!['nama'],
             idPBSI: docSNap.docs[i].data().idPBSI,
+            pembayaran: docSNap.docs[i].data().pembayaran,
           ));
         }
       } else {
@@ -60,6 +61,28 @@ class PesertaTerdaftarController extends GetxController {
       update();
     } catch (e) {
       loadC.changeLoading(false);
+      print(e);
+    }
+  }
+
+  lunasiPendaftaran(String id, String IDtur)async{
+    final ref = db.collection("peserta").withConverter(
+        fromFirestore: Peserta.fromFirestore,
+        toFirestore: (Peserta peserta, _) => peserta.toFirestore());
+      
+    try {
+      await ref.doc(id).update({
+        'pembayaran' :"Lunas"
+      });
+      getData(IDtur);
+      
+        Get.snackbar("Berhasil", "Berhasil meng-update pembayaran peserta",
+            backgroundColor: Colors.green);
+      loadC.changeLoading(false);
+    } catch (e) {
+      loadC.changeLoading(false);
+       Get.snackbar("Gagal", "Gagal meng-update pembayaran peserta",
+            backgroundColor: Colors.red);
       print(e);
     }
   }

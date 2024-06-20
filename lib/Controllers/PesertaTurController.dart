@@ -48,9 +48,12 @@ class PesertaTurController extends GetxController {
             nama: user.data()!['nama'],
             email: user.data()!['email'],
             turnamen: tur.data()!['nama'],
+            img: tur.data()!['img'],
+            biaya: tur.data()!['biaya'],
             status: docSNap.docs[i].data().status,
             level: tur.data()!['level'],
             idPBSI: docSNap.docs[i].data().idPBSI,
+            pembayaran: docSNap.docs[i].data().pembayaran,
           ));
         }
       } else {

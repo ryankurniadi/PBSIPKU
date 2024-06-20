@@ -20,12 +20,14 @@ abstract class PageNames{
   static const DataTurnamen = '/Data-Turnamen';
   static const AddTurnamen = '/Add-Turnamen';
   static const EditTurnamen = '/Edit-Turnamen';
+  static const EditTurnamenPBSI = '/Edit-TurnamenPBSI';
   static const AjukanTurnamen = '/Ajukan-Turnamen';
   static const DetailTurnamen = '/Detail-Turnamen';
 
   //Berita
   static const DataBerita = '/Data-Berita';
   static const AddBerita = '/Add-Berita';
+  static const EditBerita = '/Edit-Berita';
 
   //Users
   static const DataUser = '/Data-Users';
@@ -36,4 +38,5 @@ abstract class PageNames{
   //Manajemen PBSI
   static const DataAnggota = '/Data-Anggota';
   static const AddAnggota = '/Add-Anggota';
+  static const EditAnggota = '/Edit-Anggota';
 }

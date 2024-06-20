@@ -36,6 +36,10 @@ class DataTurnamen extends StatelessWidget {
                 children: [
                   InkWell(
                       onTap: () {
+                        turC.date.value = DateTime.now();
+                        turC.date2.value = DateTime.now();
+                        turC.setDate(DateTime.now());
+                        turC.setDate2(DateTime.now());
                         Get.toNamed(PageNames.AddTurnamen);
                       },
                       child: Container(
@@ -106,7 +110,7 @@ class AccTurnamen extends StatelessWidget {
             dataRowMaxHeight: 200,
             columns: const [
               DataColumn(label: Text('Baner Turnamen')),
-              DataColumn(label: Text('Nama Turnamen dan Level')),
+              DataColumn(label: Text('Nama Turnamen')),
               DataColumn(label: Text('Pelaksanaan')),
               DataColumn(label: Text('Lokasi')),
               DataColumn(label: Text('Aksi')),

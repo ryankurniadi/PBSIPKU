@@ -14,7 +14,7 @@ class TabelPesertaTurnamen extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => terC.totalPeserta.value;
+  int get rowCount => terC.dataTerdaftar.length;
 
   @override
   int get selectedRowCount => 0;
@@ -38,27 +38,68 @@ class TabelPesertaTurnamen extends DataTableSource {
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Align(alignment: Alignment.topLeft, child: Text("${data.namaPBSI}")),
+        child: Align(
+            alignment: Alignment.topLeft, child: Text("${data.namaPBSI}")),
+      )),
+      DataCell(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Align(
+            alignment: Alignment.topLeft,
+            child: (data.pembayaran == "Lunas")
+                ? Text("${data.pembayaran}",
+                    style: const TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold))
+                : Text("${data.pembayaran}",
+                    style: const TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold))),
       )),
       DataCell(
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Align(
               alignment: Alignment.topLeft,
-              child: InkWell(
-                onTap: () {
-                  //  turC.turID.value = "${data.id}";
-                  // turC.pengajuanTur("Ditolak");
-                  terC.deletePeserta(data.id!, data.idTurnamen!);
-                },
-                child: Container(
-                  height: 40,
-                  width: 250,
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: const Center(child: Text("Hapus Peserta")),
-                ),
+              child: Column(
+                children: [
+                  if (data.pembayaran! != "Lunas")
+                    Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            //  turC.turID.value = "${data.id}";
+                            // turC.pengajuanTur("Ditolak");
+                            terC.lunasiPendaftaran(data.id!, data.idTurnamen!);
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 250,
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(5)),
+                            child:
+                                const Center(child: Text("Pembayaran Lunas")),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    ),
+                  InkWell(
+                    onTap: () {
+                      //  turC.turID.value = "${data.id}";
+                      // turC.pengajuanTur("Ditolak");
+                      terC.deletePeserta(data.id!, data.idTurnamen!);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 250,
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: const Center(child: Text("Hapus Peserta")),
+                    ),
+                  ),
+                ],
               ),
             )),
       ),

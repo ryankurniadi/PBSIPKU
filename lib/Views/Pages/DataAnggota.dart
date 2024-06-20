@@ -1,12 +1,11 @@
-import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Models/User.dart';
+import '../Widgets/TabelAnggota.dart';
 import '../../Routes/PageNames.dart';
 import '../Widgets/NavBar.dart';
 import '../../Controllers/AnggotaController.dart';
-import '../../Controllers/AuthController.dart';
+
 
 class DataAnggota extends StatelessWidget {
   DataAnggota({super.key});
@@ -19,9 +18,9 @@ class DataAnggota extends StatelessWidget {
         appBar: NavBar(title: "Data Anggota ${anggotaC.pbsinama}"),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            //shrinkWrap: true,
-            //physics: const NeverScrollableScrollPhysics(),
+          child: ListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             //
             children: [
               Row(
@@ -68,67 +67,23 @@ class DataAnggota extends StatelessWidget {
               ),
               GetBuilder<AnggotaController>(
                 builder: (userC) {
-                  return Expanded(
-                    child: DataTable2(
-                      columnSpacing: 1,
-                      border: const TableBorder(),
+                  if (userC.dataUser.isNotEmpty) {
+                    return PaginatedDataTable(
+                      source: TabelAnggota(context),
+                      rowsPerPage: (userC.dataUser.length >= 7
+                          ? 7
+                          : userC.dataUser.length),
+                      showFirstLastButtons: true,
+                      showEmptyRows: false,
                       columns: const [
                         DataColumn(label: Text('Nama')),
-                        DataColumn(label: Text('Username')),
                         DataColumn(label: Text('Jabatan')),
-                        DataColumn(label: Text('Level')),
+                        DataColumn(label: Text('username')),
                         DataColumn(label: Text('Aksi')),
                       ],
-                      rows: List<DataRow>.generate(userC.totalUser.value,
-                          (index) {
-                        User data = userC.dataUser[index];
-                        return DataRow(cells: [
-                          DataCell(
-                            Text("${data.nama}"),
-                          ),
-                          DataCell(
-                            Text("${data.username}"),
-                          ),
-                          DataCell(
-                            Text("${data.level}"),
-                          ),
-                          DataCell(
-                            Text("${data.skill}"),
-                          ),
-                          DataCell(GetBuilder<AuthController>(
-                            builder: (authC) {
-                              if (data.email == authC.authEmail.value) {
-                                return const SizedBox();
-                              } else {
-                                return Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    InkWell(
-                                        onTap: () {},
-                                        child: const Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.key),
-                                            Text("Reset Password")
-                                          ],
-                                        )),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.edit)),
-                                    IconButton(
-                                        onPressed: () {
-                                          anggotaC.deleteUser(data.id!, data.email!);
-                                        },
-                                        icon: const Icon(Icons.delete)),
-                                  ],
-                                );
-                              }
-                            },
-                          ))
-                        ]);
-                      }),
-                    ),
-                  );
+                    );
+                  }
+                  return const Center(child: Text("Tidak ada data Anggota"));
                 },
               ),
             ],
