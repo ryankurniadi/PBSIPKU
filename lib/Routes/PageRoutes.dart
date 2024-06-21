@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../Views/Pages/EditBerita.dart';
+import '../Views/Pages/EditProfil.dart';
 import '../Views/Pages/EditUser.dart';
 import './PageNames.dart';
 import '../Middleware/AuthMiddleware.dart';
@@ -75,6 +76,13 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => Profil()),
+    //Profil
+        GetPage(
+        name: PageNames.EditProfil,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => EditProfil()),
 
     //PBSI
     GetPage(

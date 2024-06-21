@@ -35,6 +35,7 @@ class UserController extends GetxController {
   var dateShow = "".obs;
   var lahir = "".obs;
   var alamat = "".obs;
+  var changeUsername = "".obs;
 
   var idUser = "".obs;
 
@@ -192,33 +193,36 @@ class UserController extends GetxController {
     }
   }
 
-  getSingelUSerForEdit(String id)async{
-        final ref = db.collection("users").withConverter(
+  getSingelUSerForEdit(String id) async {
+    final ref = db.collection("users").withConverter(
         fromFirestore: User.fromFirestore,
         toFirestore: (User user, _) => user.toFirestore());
-
     try {
       final data = await ref.doc(id).get();
-      
+
+
       nama.value = data.data()!.nama!;
       nik.value = data.data()!.nik!;
       tgl.value = data.data()!.tgl!;
       lahir.value = data.data()!.lahir!;
       level.value = data.data()!.level!;
       alamat.value = data.data()!.alamat!;
+      pbsi.value = data.data()!.pbsi!;
       hp.value = data.data()!.hp!;
       skill.value = data.data()!.skill!;
       idUser.value = id;
 
-      if(level.value != "Root"){
+      print(nama);
+
+      if (level.value != "Root") {
         isRoot.value = false;
-      }else{
+      } else {
         isRoot.value = true;
       }
 
-      final pbsi = await db.collection('pbsi').doc(data.data()!.pbsi).get();
-      pbsiname.value = pbsi.data()!['nama'];
-      
+      final pbsis = await db.collection('pbsi').doc(data.data()!.pbsi).get();
+      pbsiname.value = pbsis.data()!['nama'];
+
       showDate(tgl.value);
       update();
     } catch (e) {
@@ -226,6 +230,36 @@ class UserController extends GetxController {
     }
   }
 
+  editUser(String id) async {
+    loadC.changeLoading(true);
+    final ref = db.collection("users").withConverter(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toFirestore());
+    try {
+      await ref.doc(id).update({
+        "nama": nama.value,
+        "hp": hp.value,
+        "level": level.value,
+        "pbsi": pbsi.value,
+        "tgl": tgl.value,
+        "nik": nik.value,
+        "alamat": alamat.value,
+        "lahir": lahir.value,
+
+      });
+
+      await getUserData();
+      loadC.changeLoading(false);
+      Get.back();
+      Get.snackbar("Berhasil", "Data Berhasil Di perbaharui",
+          backgroundColor: Colors.green);
+    } catch (e) {
+      loadC.changeLoading(false);
+      Get.snackbar("Gagal", "Data Gagal Di perbaharui",
+          backgroundColor: Colors.red);
+    }
+    
+  }
 
   getSingleUser() async {
     try {
@@ -236,8 +270,9 @@ class UserController extends GetxController {
           .where('email'.toString().toLowerCase(),
               isEqualTo: authC.authEmail.value.toLowerCase())
           .get();
+
       userProfil = User(
-        id: ref.id,
+        id: data.docs[0].id,
         nama: data.docs[0]['nama'],
         level: data.docs[0]['level'],
         username: data.docs[0]['username'],
@@ -248,6 +283,11 @@ class UserController extends GetxController {
         isPickUsername: data.docs[0]['isPickUsername'],
         pbsi: data.docs[0]['pbsi'],
         skill: data.docs[0]['skill'],
+        alamat: data.docs[0]['alamat'],
+        lahir: data.docs[0]['lahir'],
+        nik: data.docs[0]['nik'],
+        tgl: data.docs[0]['tgl'].toDate(),
+        token: data.docs[0]['token'],
       );
 
       final snap = await db.collection('pbsi').doc(userProfil!.pbsi).get();
@@ -256,7 +296,10 @@ class UserController extends GetxController {
         //print(use.data()!['nama']);
       }
       update();
-    } catch (e) {}
+    } catch (e) {
+      print("error Get Data User");
+      print(e);
+    }
   }
 
   void setDate(DateTime tgls) {
@@ -268,6 +311,48 @@ class UserController extends GetxController {
   void showDate(DateTime tgl) {
     dateShow.value = "${DateFormat("EEEE, dd MMMM yyyy", "id").format(tgl)}";
     update();
+  }
+
+  changeUser(String userID) async {
+    loadC.changeLoading(true);
+    final ref = db.collection("users").withConverter(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toFirestore());
+
+    try {
+      final data = await ref
+          .where('username'.toString().toLowerCase(),
+              isEqualTo: changeUsername.value.toLowerCase())
+          .get();
+
+      if (data.docs.length >= 1) {
+        throw Exception("Udah ada");
+      }
+
+      final us = await db
+          .collection('userlogs')
+          .where('email'.toString().toLowerCase(),
+              isEqualTo: authC.authEmail.value.toLowerCase())
+          .get();
+      String logID = us.docs[0].id;
+
+      await ref.doc(userID).update({
+        "username": changeUsername.value,
+      });
+      await db.collection('userlogs').doc(logID).update({
+        "username": changeUsername.value,
+      });
+
+      await getSingleUser();
+      Get.snackbar("Berhasil", "Username Berhasil DiGanti",
+          backgroundColor: Colors.green);
+      update();
+    } catch (e) {
+      Get.snackbar("Gagal", "Gagal, Username Sudah Di Gunakan",
+          backgroundColor: Colors.red);
+    }
+
+    loadC.changeLoading(false);
   }
 
   @override

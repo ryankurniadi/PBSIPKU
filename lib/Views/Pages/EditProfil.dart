@@ -5,15 +5,13 @@ import 'package:get/get.dart';
 
 import '../Widgets/LoadingBarrier.dart';
 import '../Widgets/NavBar.dart';
-import '../../Models/PBSI.dart';
 import '../../Controllers/UserController.dart';
-import '../../Controllers/PBSIController.dart';
 import '../../Controllers/LoadingController.dart';
 
-class EditUser extends StatelessWidget {
-  EditUser({super.key});
+class EditProfil extends StatelessWidget {
+  EditProfil({super.key});
 
-  final _formKey = GlobalKey<FormState>();
+ final _formKey = GlobalKey<FormState>();
 
   final userC = Get.find<UserController>();
 
@@ -36,13 +34,13 @@ class EditUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NavBar(title: "Perbaharui Data User"),
+      appBar: NavBar(title: "Perbaharui Profil"),
       body: GetBuilder<LoadingController>(builder: (loadC) {
         return LoadingBarrier(
           child: SingleChildScrollView(
             padding:
                 EdgeInsets.symmetric(horizontal: Get.width / 7, vertical: 20),
-            child: GetBuilder<UserController>(builder: (userC) {
+            child: GetBuilder<UserController>(builder: (_) {
               return Form(
                 key: _formKey,
                 child: Card(
@@ -229,92 +227,6 @@ class EditUser extends StatelessWidget {
                           },
                         ),
                         const SizedBox(
-                          height: 10,
-                        ),
-                       
-                        const Row(
-                          children: [
-                            Text(
-                              "Level User",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        DropdownButtonFormField(
-                          decoration:
-                              const InputDecoration(border: OutlineInputBorder()),
-                          value: userC.level.value,
-                          onSaved: (value) {
-                            userC.level.value = value!;
-                          },
-                          onChanged: (value) {
-                            userC.level.value = value!;
-                            if (value! == "Root" ) {
-                              userC.levelUserChanger(true);
-                              
-                            } else {
-                              userC.levelUserChanger(false);
-                            }
-                          },
-                          items: const [
-                            DropdownMenuItem(
-                              value: "Root",
-                              child: Text("Admin Sistem/Root"),
-                            ),
-                            DropdownMenuItem(
-                              value: "Admin PBSI",
-                              child: Text("Admin PBSI"),
-                            ),
-                            DropdownMenuItem(
-                              value: "Anggota PBSI",
-                              child: Text("Anggota PBSI"),
-                            ),
-                          ],
-                        ),
-                        (userC.level.value == "Admin PBSI"
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  const Row(
-                                    children: [
-                                      Text(
-                                        "Pilih PBSI",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  GetBuilder<PBSIController>(builder: (pbsiC) {
-                                    return DropdownButtonFormField(
-                                      
-                                      decoration: const InputDecoration(
-                                          border: OutlineInputBorder()),
-                                      hint: const Text("Pilih PBSI"),
-                                      onChanged: (value) {
-                                        userC.pbsi.value = value!;
-                                      },
-                                      items: List<DropdownMenuItem>.generate(
-                                          pbsiC.totalPBSI.value, (index) {
-                                        PBSI data = pbsiC.dataPBSI[index];
-                                        return DropdownMenuItem(
-                                          value: "${data.id}",
-                                          child: Text("${data.nama}"),
-                                        );
-                                      }),
-                                    );
-                                  }),
-                                ],
-                              )
-                            : const SizedBox()),
-                        const SizedBox(
                           height: 20,
                         ),
                         InkWell(
@@ -329,7 +241,7 @@ class EditUser extends StatelessWidget {
                             height: 60,
                             decoration: BoxDecoration(color: Colors.green),
                             child: const Center(
-                              child: Text("Perbaharui Data User"),
+                              child: Text("Perbaharui Profil"),
                             ),
                           ),
                         ),

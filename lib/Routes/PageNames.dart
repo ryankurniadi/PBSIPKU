@@ -10,6 +10,7 @@ abstract class PageNames{
 
   //profil
   static const Profil = '/Profil';
+  static const EditProfil = '/Edit-Profil';
 
   //PBSI
   static const DataPBSI = '/DataPBSI';
