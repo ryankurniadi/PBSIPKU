@@ -38,7 +38,7 @@ class TurnamenController extends GetxController {
   var statusupload = true.obs;
 
   var turID = "".obs;
-  var dataSatuTur = [].obs;
+  RxList dataSatuTur = [].obs;
   var isEditImg = false.obs;
 
   final loadC = Get.find<LoadingController>();

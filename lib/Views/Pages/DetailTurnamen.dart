@@ -10,6 +10,7 @@ import '../Widgets/NavBar.dart';
 import '../../Models/Turnamen.dart';
 import '../Widgets/LoadingBarrier.dart';
 import '../../Controllers/TurnamenContoller.dart';
+import '../../Controllers/ExcelController.dart';
 
 class DetailTurnamen extends StatelessWidget {
   DetailTurnamen({super.key});
@@ -105,11 +106,9 @@ class DetailTurnamen extends StatelessWidget {
                                       maxWidth: 400,
                                     ),
                                     decoration: BoxDecoration(
-                                        color: Colors.orange,
-                                        borderRadius:
-                                            BorderRadius.circular(10),
-                                        
-                                            ),
+                                      color: Colors.orange,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 7, horizontal: 15),
@@ -118,7 +117,7 @@ class DetailTurnamen extends StatelessWidget {
                                             CrossAxisAlignment.center,
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           const FaIcon(
                                             FontAwesomeIcons.locationDot,
@@ -270,20 +269,43 @@ class DetailTurnamen extends StatelessWidget {
                               ),
                             );
                           }
-                          return PaginatedDataTable(
-                            source: TabelPesertaTurnamen(context),
-                            header: const Text("Daftar Peserta"),
-                            rowsPerPage: (terC.totalPeserta.value >= 7
-                                ? 7
-                                : terC.totalPeserta.value),
-                            showFirstLastButtons: true,
-                            showEmptyRows: false,
-                            dataRowMaxHeight: 150,
-                            columns: const [
-                              DataColumn(label: Text('Nama Peserta')),
-                              DataColumn(label: Text('Asal PBSI')),
-                              DataColumn(label: Text('Status Pembayaran')),
-                              DataColumn(label: Text('Aksi')),
+                          return Column(
+                            children: [
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: (){
+                                      ExportController.satexportFile(terC.dataTerdaftar.value);
+                                    },
+                                    child: Container(
+                                      width: 200,
+                                      height: 60,
+                                      decoration:
+                                          const BoxDecoration(color: Colors.green),
+                                      child: const Center(
+                                        child: Text("Download Data Peserta"),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10,),
+                              PaginatedDataTable(
+                                source: TabelPesertaTurnamen(context),
+                                header: const Text("Daftar Peserta"),
+                                rowsPerPage: (terC.totalPeserta.value >= 7
+                                    ? 7
+                                    : terC.totalPeserta.value),
+                                showFirstLastButtons: true,
+                                showEmptyRows: false,
+                                dataRowMaxHeight: 150,
+                                columns: const [
+                                  DataColumn(label: Text('Nama Peserta')),
+                                  DataColumn(label: Text('Asal PBSI')),
+                                  DataColumn(label: Text('Status Pembayaran')),
+                                  DataColumn(label: Text('Aksi')),
+                                ],
+                              ),
                             ],
                           );
                         },

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pbsipku/Controllers/AuthController.dart';
 
 import '../../Models/Turnamen.dart';
 import '../../Controllers/ListTurPBSIController.dart';
 import '../../Controllers/TurnamenContoller.dart';
+import '../../Controllers/AuthController.dart';
+import '../../Models/User.dart';
 import '../../Routes/PageNames.dart';
 
 class TabelListTurPBSI extends DataTableSource {
   final BuildContext context;
   TabelListTurPBSI(this.context);
   final turC = Get.find<ListTurPBSIController>();
+  final authC = Get.find<AuthController>();
   final turAsliC = Get.find<TurnamenController>();
 
   @override
@@ -37,8 +41,8 @@ class TabelListTurPBSI extends DataTableSource {
               children: [
                 Text(
                   "${data.nama}",
-                  style:
-                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 17),
                 ),
                 Row(
                   children: [
@@ -53,12 +57,15 @@ class TabelListTurPBSI extends DataTableSource {
                           child: Text(
                             data.level!,
                             style: const TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 5,),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.green,
@@ -68,9 +75,14 @@ class TabelListTurPBSI extends DataTableSource {
                             vertical: 4, horizontal: 13),
                         child: Center(
                           child: Text(
-                            NumberFormat.currency(locale: 'id', symbol: 'Rp. ', decimalDigits: 0).format(data.biaya!),
+                            NumberFormat.currency(
+                                    locale: 'id',
+                                    symbol: 'Rp. ',
+                                    decimalDigits: 0)
+                                .format(data.biaya!),
                             style: const TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -105,9 +117,14 @@ class TabelListTurPBSI extends DataTableSource {
         DataCell(Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Align(
-              alignment: Alignment.topLeft, child: SizedBox(
-                width: 200,
-                child: Text("${data.lokasi}", maxLines: 4, overflow: TextOverflow.ellipsis,))),
+              alignment: Alignment.topLeft,
+              child: SizedBox(
+                  width: 200,
+                  child: Text(
+                    "${data.lokasi}",
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ))),
         )),
         DataCell(
           Padding(
@@ -120,10 +137,10 @@ class TabelListTurPBSI extends DataTableSource {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     InkWell(
-                      onTap: () async{
+                      onTap: () async {
                         turAsliC.turID.value = "${data.id}";
                         await turAsliC.getSingleTur();
-                      Get.toNamed(PageNames.DetailTurnamenPBSI);
+                        Get.toNamed(PageNames.DetailTurnamenPBSI);
                         //turC.pengajuanTur("Disetujui");
                       },
                       child: Container(
@@ -139,11 +156,93 @@ class TabelListTurPBSI extends DataTableSource {
                       height: 10,
                     ),
                     InkWell(
-                      onTap: () {
-                        Get.defaultDialog(
-                          title: "Pilih Anggota",
-
-                        );
+                      onTap: () async {
+                        turC.player1SelectNotify(false);
+                        await turC.checkUserTerdaftar(
+                            authC.authpbsi.value, data.id!, data.level!);
+                        Get.dialog(AlertDialog(
+                          title: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text("Pilih anggota yang ingin didaftarkan", style: TextStyle(
+                                fontSize: 15,
+                              ),),
+                              Text(data.nama!, style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue
+                              ),)
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                                style: const ButtonStyle(
+                                    backgroundColor:
+                                        WidgetStatePropertyAll(Colors.green)),
+                                onPressed: () async{
+                                  Get.back();
+                                  await turC.daftarkanUser(data.id!, authC.authpbsi.value);
+                                },
+                                child: const Text(
+                                  "Daftar Anggota",
+                                  style: TextStyle(color: Colors.white),
+                                ))
+                          ],
+                          content: GetBuilder<ListTurPBSIController>(
+                            builder: (_) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  DropdownButtonFormField(
+                                    decoration: const InputDecoration(
+                                        border: OutlineInputBorder()),
+                                    hint: const Text("Pemain 1"),
+                                    onChanged: (value) {
+                                      turC.player1SelectNotify(true);
+                                      turC.pemain1.value = value;
+                                      turC.hideSelectedUser(value);
+                                    },
+                                    onTap: () {
+                                      turC.player1SelectNotify(false);
+                                    },
+                                    items: List<DropdownMenuItem>.generate(
+                                        turC.pesertaBelumTerdaftar.length,
+                                        (index) {
+                                      User data =
+                                          turC.pesertaBelumTerdaftar[index];
+                                      return DropdownMenuItem(
+                                        value: "${data.id}",
+                                        child: Text("${data.nama}"),
+                                      );
+                                    }),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  if (turC.isPemain1Selected.value)
+                                    DropdownButtonFormField(
+                                      decoration: const InputDecoration(
+                                          border: OutlineInputBorder()),
+                                      hint: const Text("Pemain 2"),
+                                      onChanged: (value) {
+                                        //turC.player1SelectNotify(true);
+                                        turC.pemain2.value = value;
+                                      },
+                                      items: List<DropdownMenuItem>.generate(
+                                          turC.pesertaBelumTerdaftar2.length,
+                                          (index) {
+                                        User data =
+                                            turC.pesertaBelumTerdaftar2[index];
+                                        return DropdownMenuItem(
+                                          value: "${data.id}",
+                                          child: Text("${data.nama}"),
+                                        );
+                                      }),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        ));
                       },
                       child: Container(
                         height: 40,

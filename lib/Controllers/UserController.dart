@@ -36,6 +36,7 @@ class UserController extends GetxController {
   var lahir = "".obs;
   var alamat = "".obs;
   var changeUsername = "".obs;
+  
 
   var idUser = "".obs;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get_rx/get_rx.dart';
 
 import '../Api/SendNotif.dart';
 import '../Models/User.dart';
@@ -12,7 +13,7 @@ class PesertaTerdaftarController extends GetxController {
   final db = FirebaseFirestore.instance;
 
   final loadC = Get.find<LoadingController>();
-  var dataTerdaftar = [].obs;
+  RxList<Pesertaview> dataTerdaftar = <Pesertaview>[].obs;
   var totalPeserta = 0.obs;
 
   getData(String idTur) async {

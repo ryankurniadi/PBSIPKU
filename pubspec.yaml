@@ -33,6 +33,7 @@ dependencies:
   data_table_2: ^2.5.12
   dynamic_tabbar: ^1.0.7
   email_validator: ^2.1.17
+  excel: ^4.0.3
   file_picker: ^8.0.3
   firebase_auth: ^5.0.0
   firebase_core: ^3.0.0

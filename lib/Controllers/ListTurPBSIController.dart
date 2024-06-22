@@ -1,16 +1,27 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../Api/SendNotif.dart';
 import '../Models/Peserta.dart';
 import '../Models/User.dart';
 import '../Models/Turnamen.dart';
+import './LoadingController.dart';
 
 class ListTurPBSIController extends GetxController {
   final db = FirebaseFirestore.instance;
-
+  final loadC = Get.find<LoadingController>();
   var dataTurnamen = [].obs;
   var ket = "".obs;
   var table = 'turnamen';
+
+  var pesertaBelumTerdaftar = [].obs;
+  var pesertaBelumTerdaftar2 = [].obs;
+  var namaUser2 = "".obs;
+
+  var pemain1 = "".obs;
+  var pemain2 = "".obs;
+  var isPemain1Selected = false.obs;
 
   getData() async {
     ket.value = "";
@@ -49,6 +60,121 @@ class ListTurPBSIController extends GetxController {
     } catch (e) {
       print(e);
     }
+  }
+
+  checkUserTerdaftar(String idPBSI, String idTur, String level) async {
+    namaUser2.value = "";
+    final refPeserta = db.collection("peserta").withConverter(
+        fromFirestore: Peserta.fromFirestore,
+        toFirestore: (Peserta peserta, _) => peserta.toFirestore());
+    final refUser = db.collection("users").withConverter(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toFirestore());
+
+    try {
+      final dataUsr = await refUser
+          .where('pbsi'.toString(), isEqualTo: idPBSI)
+          .where('skill'.toString(), isEqualTo: level)
+          .get();
+      if (dataUsr.docs.isNotEmpty) {
+        pesertaBelumTerdaftar.clear();
+        for (var i = 0; i < dataUsr.docs.length; i++) {
+          String idUserFromDB = dataUsr.docs[i].id;
+          final checkDaftar1 = await refPeserta
+              .where('idTurnamen'.toString(), isEqualTo: idTur)
+              .where('idPBSI'.toString(), isEqualTo: idPBSI)
+              .where('idUser'.toString(), isEqualTo: idUserFromDB)
+              .where('status'.toString(), isEqualTo: "Disetujui")
+              .get();
+          final checkDaftar2 = await refPeserta
+              .where('idTurnamen'.toString(), isEqualTo: idTur)
+              .where('idPBSI'.toString(), isEqualTo: idPBSI)
+              .where('idUser2'.toString(), isEqualTo: idUserFromDB)
+              .where('status'.toString(), isEqualTo: "Disetujui")
+              .get();
+
+          if (checkDaftar1.docs.isEmpty && checkDaftar2.docs.isEmpty) {
+            pesertaBelumTerdaftar.add(User(
+              nama: dataUsr.docs[i].data().nama,
+              id: dataUsr.docs[i].id,
+            ));
+          }
+        }
+      }
+
+      print(pesertaBelumTerdaftar.length);
+      update();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  hideSelectedUser(String namaUser) {
+    //pesertaBelumTerdaftar2.clear();
+    pesertaBelumTerdaftar2.assignAll(
+        pesertaBelumTerdaftar.where((user) => user.id != namaUser).toList());
+    update();
+  }
+
+  daftarkanUser(String turID, String idPBSInya) async {
+    loadC.changeLoading(true);
+    final ref = db.collection("peserta").withConverter(
+        fromFirestore: Peserta.fromFirestore,
+        toFirestore: (Peserta peserta, _) => peserta.toFirestore());
+    var data = Peserta(
+        idPBSI: idPBSInya,
+        idTurnamen: turID,
+        idUser: pemain1.value,
+        idUser2: pemain2.value,
+        pembayaran: "Belum Lunas",
+        status: "Disetujui");
+
+    try {
+      final tur = await db.collection('turnamen').doc(turID).get();
+      int? limit = tur.data()!['limit'];
+
+      final terdaftar = await ref
+          .where('idTurnamen'.toString(), isEqualTo: turID)
+          .where('idPBSI'.toString(), isEqualTo: idPBSInya)
+          .where('status'.toString(), isEqualTo: "Disetujui")
+          .get();
+      if (terdaftar.docs.length < limit!) {
+        await ref.add(data);
+
+        Get.snackbar("Berhasil", "Anda Berhasil Mendaftarkan Anggota Anda",
+            backgroundColor: Colors.green);
+        final tabelUser = db.collection("users").withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (User user, _) => user.toFirestore());
+        ;
+        final getUserData = await tabelUser.doc(pemain1.value).get();
+        String? tokenUser = getUserData.data()!.token;
+        final tabelUser2 = db.collection("users").withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (User user, _) => user.toFirestore());
+        ;
+        final getUserData2 = await tabelUser2.doc(pemain2.value).get();
+        String? tokenUser2 = getUserData2.data()!.token;
+        //Kirim Notif
+        SendNotif().sendNotif(tokenUser!, "Pendaftaran Turnamen", "Anda Terdaftar di Turnamen ${tur.data()!['nama']}");
+        SendNotif().sendNotif(tokenUser2!, "Pendaftaran Turnamen", "Anda Terdaftar di Turnamen ${tur.data()!['nama']}");
+
+      } else {
+        Get.snackbar("Gagal", "Maksimal Perwakilan sudah terpenuhi",
+            backgroundColor: Colors.red);
+      }
+    } catch (e) {
+      print(e);
+    }
+    loadC.changeLoading(false);
+  }
+
+  player1SelectNotify(bool isSelect) {
+    isPemain1Selected.value = isSelect;
+    if (isSelect) {
+      pemain2.value = "";
+    }
+    update();
   }
 
   @override
