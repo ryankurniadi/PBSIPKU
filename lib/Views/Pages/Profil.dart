@@ -21,12 +21,87 @@ class Profil extends StatelessWidget {
               padding:
                   EdgeInsets.symmetric(horizontal: Get.width / 3, vertical: 20),
               children: [
-                SizedBox(
-                  height: 150,
-                  width: 150,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage("${userC.userProfil!.img}"),
-                  ),
+                Center(
+                  child: Stack(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                maxRadius: 67,
+                                backgroundImage:
+                                    NetworkImage("${userC.userProfil!.img}"),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: FloatingActionButton(
+                                  shape: const CircleBorder(),
+                                  backgroundColor: Colors.white70,
+                                  mini: true,
+                                  onPressed: () {
+                                   // userC.imgPicked(false);
+                                    Get.defaultDialog(
+                                      title: "Pilih Gambar",
+                                      content: GetBuilder<UserController>(
+                                        builder: (userC) {
+                                          if (1 != 2) {
+                                         // if (!userC.isImgPicked.value) {
+                                            return Center(
+                                              child: InkWell(
+                                                onTap: () async{
+                                                  //userC.pickImage();
+                                                },
+                                                child: Container(
+                                                  height: 250,
+                                                  width: 250,
+                                                  decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.grey.shade200,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  child: const Center(
+                                                      child: Icon(
+                                                    Icons.camera_alt,
+                                                    size: 100,
+                                                    color: Colors.black38,
+                                                  )),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          return Column(
+                                            children: [
+                                              Container(
+                                                height: 250,
+                                                width: 250,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  //child: Image.file(userC.image!)
+                                                  ),
+                                              ),
+                                              const SizedBox(height: 10,),
+                                              TextButton(onPressed: ()async{
+                                                Get.back();
+                                                //await userC.gantiProfil();
+                                              },style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.green), padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 20))), child: const Text("Ganti Foto Profil", style: TextStyle(color: Colors.white),))
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    size: 24,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                 ),
                 const SizedBox(
                   height: 5,

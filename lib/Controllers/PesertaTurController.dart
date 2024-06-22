@@ -37,6 +37,10 @@ class PesertaTurController extends GetxController {
               .collection('users')
               .doc(docSNap.docs[i].data().idUser)
               .get();
+          final user2 = await db
+              .collection('users')
+              .doc(docSNap.docs[i].data().idUser2)
+              .get();
           final tur = await db
               .collection('turnamen')
               .doc(docSNap.docs[i].data().idTurnamen)
@@ -45,8 +49,13 @@ class PesertaTurController extends GetxController {
             id: docSNap.docs[i].data().id,
             idTurnamen: docSNap.docs[i].data().idTurnamen,
             idUser: docSNap.docs[i].data().idUser,
+            idUser2: docSNap.docs[i].data().idUser,
             nama: user.data()!['nama'],
+            nama2: user2.data()!['nama'],
+            hp: user.data()!['hp'],
+            hp2: user2.data()!['hp'],
             email: user.data()!['email'],
+            email2: user2.data()!['email'],
             turnamen: tur.data()!['nama'],
             img: tur.data()!['img'],
             biaya: tur.data()!['biaya'],
@@ -101,7 +110,7 @@ class PesertaTurController extends GetxController {
     }
   }
 
-  setujuiPengajuan(String id, String idPBSI, String idTur, String idUser) async {
+  setujuiPengajuan(String id, String idPBSI, String idTur, String idUser, String idUser2) async {
     loadC.changeLoading(true);
     klik.value = true;
     final ref = db.collection("peserta").withConverter(
@@ -127,8 +136,15 @@ class PesertaTurController extends GetxController {
         ;
         final getUserData = await tabelUser.doc(idUser).get();
         String? tokenUser = getUserData.data()!.token;
+        final tabelUser2 = db.collection("users").withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (User user, _) => user.toFirestore());
+        ;
+        final getUserData2 = await tabelUser2.doc(idUser2).get();
+        String? tokenUser2 = getUserData2.data()!.token;
         //Kirim Notif
         SendNotif().sendNotif(tokenUser!, "Pengajuan Disetujui", "Pengajuan Pendaftaranmu di Turnamen ${tur.data()!['nama']} Disetujui");
+        SendNotif().sendNotif(tokenUser2!, "Pengajuan Disetujui", "Pengajuan Pendaftaranmu di Turnamen ${tur.data()!['nama']} Disetujui");
 
       } else {
         Get.snackbar("Gagal", "Maksimal Perwakilan sudah terpenuhi",

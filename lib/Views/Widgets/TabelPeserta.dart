@@ -32,12 +32,29 @@ class TabelPeserta extends DataTableSource {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "${data.nama}",
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${data.nama}",
+                    style:
+                        const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                  Text("No. HP : ${data.hp}"),
+                ],
               ),
-              Text("${data.email}"),
+              const SizedBox(height: 10,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${data.nama2}",
+                    style:
+                        const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                  Text("No. HP : ${data.hp2}"),
+                ],
+              ),
             ],
           ),
         ),
@@ -149,7 +166,10 @@ class TabelPeserta extends DataTableSource {
                                     data.id!,
                                     data.idPBSI!,
                                     data.idTurnamen!,
-                                    data.idUser!);
+                                    data.idUser!,
+                                    data.idUser2!,
+                                    
+                                    );
                               }
                               //  turC.turID.value = "${data.id}";
                               //turC.pengajuanTur("Disetujui");

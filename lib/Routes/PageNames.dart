@@ -24,6 +24,12 @@ abstract class PageNames{
   static const EditTurnamenPBSI = '/Edit-TurnamenPBSI';
   static const AjukanTurnamen = '/Ajukan-Turnamen';
   static const DetailTurnamen = '/Detail-Turnamen';
+  static const DetailTurnamenPBSI = '/Detail-Turnamen';
+  
+  
+  static const ListPBSITurnamen = '/ListPBSI-Turnamen';
+
+
 
   //Berita
   static const DataBerita = '/Data-Berita';

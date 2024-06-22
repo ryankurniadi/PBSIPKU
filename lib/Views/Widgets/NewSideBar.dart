@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 import '../../Controllers/AuthController.dart';
 import '../Pages/Beranda.dart';
 import '../Pages/BlankPage.dart';
@@ -10,6 +11,7 @@ import '../Pages/DataTurnamenPBSI.dart';
 import '../Pages/DataBerita.dart';
 import '../Pages/DataUsers.dart';
 import '../Pages/DataAnggota.dart';
+import '../Pages/ListTurnamenPBSI.dart';
 
 class NewSideBar extends StatelessWidget {
   NewSideBar({super.key, required this.index});
@@ -40,12 +42,14 @@ class NewSideBar extends StatelessWidget {
         case 0:
           return Beranda();
         case 1:
-          return DataTurnamenPBSI();
+          return ListTurnamenPBSI();
         case 2:
-          return DataAnggota();
+          return DataTurnamenPBSI();
         case 3:
-          return DataBerita();
+          return DataAnggota();
         case 4:
+          return DataBerita();
+        case 5:
           return const BlankPage();
         default:
           return Beranda();

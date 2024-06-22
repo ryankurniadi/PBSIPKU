@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../Widgets/NewSideBar.dart';
@@ -128,6 +129,9 @@ class _HomeState extends State<Home> {
                                   Icons.house,
                                 ),
                                 label: Text("Home")),
+                            NavigationRailDestination(
+                                icon: FaIcon(FontAwesomeIcons.trophy),
+                                label: Text("Turnamen Publik")),
                             NavigationRailDestination(
                                 icon: Icon(Icons.ballot),
                                 label: Text("Turnamen")),

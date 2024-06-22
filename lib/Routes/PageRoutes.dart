@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
 
+
+import '../Views/Pages/DetailTurnamenPBSI.dart';
 import '../Views/Pages/EditBerita.dart';
 import '../Views/Pages/EditProfil.dart';
 import '../Views/Pages/EditUser.dart';
+import '../Views/Pages/ListTurnamenPBSI.dart';
 import './PageNames.dart';
 import '../Middleware/AuthMiddleware.dart';
 import '../Middleware/LoginMiddleware.dart';
@@ -103,6 +106,18 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => EditPBSI()),
+    GetPage(
+        name: PageNames.ListPBSITurnamen,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => ListTurnamenPBSI()),
+    GetPage(
+        name: PageNames.DetailTurnamenPBSI,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => DetailTurnamenPBSI()),
 
     //Turnamen
     GetPage(
