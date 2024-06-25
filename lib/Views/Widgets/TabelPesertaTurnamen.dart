@@ -87,7 +87,15 @@ class TabelPesertaTurnamen extends DataTableSource {
                           onTap: () {
                             //  turC.turID.value = "${data.id}";
                             // turC.pengajuanTur("Ditolak");
-                            terC.lunasiPendaftaran(data.id!, data.idTurnamen!);
+                           Get.defaultDialog(
+                            middleText: "Apakah Anda ingin Mengubah Status Peserta ( ${data.nama} & ${data.nama2} ) Pembayaran Menjadi \"Lunas\"??",
+                            textConfirm: "Iya",
+                            textCancel: "Tidak",
+                            onConfirm: (){
+                              terC.lunasiPendaftaran(data.id!, data.idTurnamen!);
+                              Get.back();
+                            }
+                           );
                           },
                           child: Container(
                             height: 40,
@@ -96,7 +104,9 @@ class TabelPesertaTurnamen extends DataTableSource {
                                 color: Colors.green,
                                 borderRadius: BorderRadius.circular(5)),
                             child:
-                                const Center(child: Text("Pembayaran Lunas")),
+                                const Center(child: Text("Pembayaran Lunas",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),)),
                           ),
                         ),
                         const SizedBox(
@@ -108,7 +118,15 @@ class TabelPesertaTurnamen extends DataTableSource {
                     onTap: () {
                       //  turC.turID.value = "${data.id}";
                       // turC.pengajuanTur("Ditolak");
-                      terC.deletePeserta(data.id!, data.idTurnamen!);
+                      Get.defaultDialog(
+                        textCancel: 'Tidak',
+                        textConfirm: 'Iya',
+                        middleText: 'APakah Anda Ingin Menghapus ( ${data.nama} & ${data.nama2} ) dari daftar peserta?',
+                        onConfirm: (){
+                          terC.deletePeserta(data.id!, data.idTurnamen!);
+                          Get.back();
+                        }
+                      );
                     },
                     child: Container(
                       height: 40,
@@ -116,7 +134,9 @@ class TabelPesertaTurnamen extends DataTableSource {
                       decoration: BoxDecoration(
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(5)),
-                      child: const Center(child: Text("Hapus Peserta")),
+                      child: const Center(child: Text("Hapus Peserta",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),)),
                     ),
                   ),
                 ],

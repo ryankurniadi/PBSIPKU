@@ -523,7 +523,8 @@ class EditTurPBSI extends StatelessWidget {
                       child: Container(
                         width: Get.width / 1.1,
                         height: 60,
-                        decoration: const BoxDecoration(color: Colors.green),
+                        decoration: BoxDecoration(color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),),
                         child: const Center(
                           child: Text(
                             "Perbaharui Turnamen",

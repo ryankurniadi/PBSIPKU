@@ -184,7 +184,7 @@ class Ajukanturnamen extends StatelessWidget {
                                         const Row(
                                           children: [
                                             Text(
-                                              "Batas Perwakilan Tiap PBSI",
+                                              "Batas Perwakilan Tim Tiap PBSI",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 17),
@@ -531,9 +531,12 @@ class Ajukanturnamen extends StatelessWidget {
                       child: Container(
                         width: Get.width / 1.1,
                         height: 60,
-                        decoration: BoxDecoration(color: Colors.green),
+                        decoration: BoxDecoration(color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),),
                         child: const Center(
-                          child: Text("Ajukan Turnamen"),
+                          child: Text("Ajukan Turnamen",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),),
                         ),
                       ),
                     ),

@@ -131,7 +131,9 @@ class TabelTurnamen2 extends DataTableSource {
                       decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(5)),
-                      child: const Center(child: Text("Setujui")),
+                      child: const Center(child: Text("Setujui",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),)),
                     ),
                   ),
                   const SizedBox(
@@ -148,7 +150,9 @@ class TabelTurnamen2 extends DataTableSource {
                       decoration: BoxDecoration(
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(5)),
-                      child: const Center(child: Text("Tolak")),
+                      child: const Center(child: Text("Tolak",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),)),
                     ),
                   ),
                 ],

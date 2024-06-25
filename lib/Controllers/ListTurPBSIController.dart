@@ -22,6 +22,7 @@ class ListTurPBSIController extends GetxController {
   var pemain1 = "".obs;
   var pemain2 = "".obs;
   var isPemain1Selected = false.obs;
+  var isAllPemainSelected = false.obs;
 
   getData() async {
     ket.value = "";
@@ -70,14 +71,13 @@ class ListTurPBSIController extends GetxController {
     final refUser = db.collection("users").withConverter(
         fromFirestore: User.fromFirestore,
         toFirestore: (User user, _) => user.toFirestore());
-
+    pesertaBelumTerdaftar.clear();
     try {
       final dataUsr = await refUser
           .where('pbsi'.toString(), isEqualTo: idPBSI)
           .where('skill'.toString(), isEqualTo: level)
           .get();
       if (dataUsr.docs.isNotEmpty) {
-        pesertaBelumTerdaftar.clear();
         for (var i = 0; i < dataUsr.docs.length; i++) {
           String idUserFromDB = dataUsr.docs[i].id;
           final checkDaftar1 = await refPeserta
@@ -101,8 +101,6 @@ class ListTurPBSIController extends GetxController {
           }
         }
       }
-
-      print(pesertaBelumTerdaftar.length);
       update();
     } catch (e) {
       print(e);
@@ -138,31 +136,40 @@ class ListTurPBSIController extends GetxController {
           .where('idPBSI'.toString(), isEqualTo: idPBSInya)
           .where('status'.toString(), isEqualTo: "Disetujui")
           .get();
-      if (terdaftar.docs.length < limit!) {
-        await ref.add(data);
+          //kesini nanati
+      if (pemain1.value != "" && pemain2.value != "") {
+        Get.back();
+        if (terdaftar.docs.length < limit!) {
+          await ref.add(data);
 
-        Get.snackbar("Berhasil", "Anda Berhasil Mendaftarkan Anggota Anda",
-            backgroundColor: Colors.green);
-        final tabelUser = db.collection("users").withConverter(
-            fromFirestore: User.fromFirestore,
-            toFirestore: (User user, _) => user.toFirestore());
-        ;
-        final getUserData = await tabelUser.doc(pemain1.value).get();
-        String? tokenUser = getUserData.data()!.token;
-        final tabelUser2 = db.collection("users").withConverter(
-            fromFirestore: User.fromFirestore,
-            toFirestore: (User user, _) => user.toFirestore());
-        ;
-        final getUserData2 = await tabelUser2.doc(pemain2.value).get();
-        String? tokenUser2 = getUserData2.data()!.token;
-        //Kirim Notif
-        SendNotif().sendNotif(tokenUser!, "Pendaftaran Turnamen", "Anda Terdaftar di Turnamen ${tur.data()!['nama']}");
-        SendNotif().sendNotif(tokenUser2!, "Pendaftaran Turnamen", "Anda Terdaftar di Turnamen ${tur.data()!['nama']}");
-
-      } else {
-        Get.snackbar("Gagal", "Maksimal Perwakilan sudah terpenuhi",
-            backgroundColor: Colors.red);
+          Get.snackbar("Berhasil", "Anda Berhasil Mendaftarkan Anggota Anda",
+              backgroundColor: Colors.green);
+          final tabelUser = db.collection("users").withConverter(
+              fromFirestore: User.fromFirestore,
+              toFirestore: (User user, _) => user.toFirestore());
+          ;
+          final getUserData = await tabelUser.doc(pemain1.value).get();
+          String? tokenUser = getUserData.data()!.token;
+          final tabelUser2 = db.collection("users").withConverter(
+              fromFirestore: User.fromFirestore,
+              toFirestore: (User user, _) => user.toFirestore());
+          ;
+          final getUserData2 = await tabelUser2.doc(pemain2.value).get();
+          String? tokenUser2 = getUserData2.data()!.token;
+          //Kirim Notif
+          SendNotif().sendNotif(tokenUser!, "Pendaftaran Turnamen",
+              "Anda Terdaftar di Turnamen ${tur.data()!['nama']}");
+          SendNotif().sendNotif(tokenUser2!, "Pendaftaran Turnamen",
+              "Anda Terdaftar di Turnamen ${tur.data()!['nama']}");
+        } else {
+          Get.snackbar("Gagal", "Maksimal Perwakilan sudah terpenuhi",
+              backgroundColor: Colors.red);
+        }
       }
+      else{
+        isAllPemainSelected.value = false;
+      }
+      update();
     } catch (e) {
       print(e);
     }

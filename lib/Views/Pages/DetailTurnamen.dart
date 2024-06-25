@@ -167,7 +167,7 @@ class DetailTurnamen extends StatelessWidget {
                                             width: 5,
                                           ),
                                           Text(
-                                            "Max Perwakilan: ${data.limit!} Orang",
+                                            "Max Perwakilan: ${data.limit!} Tim",
                                             style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -244,6 +244,46 @@ class DetailTurnamen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GetBuilder<PesertaTerdaftarController>(
+                      builder: (_) {
+                        if(terC.totalPeserta <= 0){
+                          return const SizedBox();
+                        }
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  ExportController.satexportFile(
+                                      terC.dataTerdaftar.value);
+                                },
+                                child: Container(
+                                  width: 200,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                    child: Text(
+                                      "Download Data Peserta",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20, horizontal: 20),
@@ -269,43 +309,20 @@ class DetailTurnamen extends StatelessWidget {
                               ),
                             );
                           }
-                          return Column(
-                            children: [
-                              Row(
-                                children: [
-                                  InkWell(
-                                    onTap: (){
-                                      ExportController.satexportFile(terC.dataTerdaftar.value);
-                                    },
-                                    child: Container(
-                                      width: 200,
-                                      height: 60,
-                                      decoration:
-                                          const BoxDecoration(color: Colors.green),
-                                      child: const Center(
-                                        child: Text("Download Data Peserta"),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10,),
-                              PaginatedDataTable(
-                                source: TabelPesertaTurnamen(context),
-                                header: const Text("Daftar Peserta"),
-                                rowsPerPage: (terC.totalPeserta.value >= 7
-                                    ? 7
-                                    : terC.totalPeserta.value),
-                                showFirstLastButtons: true,
-                                showEmptyRows: false,
-                                dataRowMaxHeight: 150,
-                                columns: const [
-                                  DataColumn(label: Text('Nama Peserta')),
-                                  DataColumn(label: Text('Asal PBSI')),
-                                  DataColumn(label: Text('Status Pembayaran')),
-                                  DataColumn(label: Text('Aksi')),
-                                ],
-                              ),
+                          return PaginatedDataTable(
+                            source: TabelPesertaTurnamen(context),
+                            header: const Text("Daftar Peserta"),
+                            rowsPerPage: (terC.totalPeserta.value >= 7
+                                ? 7
+                                : terC.totalPeserta.value),
+                            showFirstLastButtons: true,
+                            showEmptyRows: false,
+                            dataRowMaxHeight: 150,
+                            columns: const [
+                              DataColumn(label: Text('Nama Peserta')),
+                              DataColumn(label: Text('Asal PBSI')),
+                              DataColumn(label: Text('Status Pembayaran')),
+                              DataColumn(label: Text('Aksi')),
                             ],
                           );
                         },

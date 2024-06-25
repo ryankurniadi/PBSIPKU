@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,14 +15,19 @@ class AuthController extends GetxController {
   var isLogin = false.obs;
   var email = "".obs;
   var password = "".obs;
+  var newpassword = "".obs;
+  var newpassword2 = "".obs;
   var isLoginFail = false.obs;
   var isRegFail = false.obs;
+  var pasGaksama = false.obs;
+  var sandiSalah = false.obs;
 
   var authEmail = "".obs;
   var authLevel = "".obs;
   var authpbsi = "".obs;
   var authpbsinama = "".obs;
   var authimg = "".obs;
+  var authUserID = "".obs;
 
   var authtoken = "".obs;
   var relog = false.obs;
@@ -40,6 +46,7 @@ class AuthController extends GetxController {
       authLevel.value = data.docs[0]['level'];
       authpbsi.value = data.docs[0]['pbsi'];
       authimg.value = data.docs[0]['img'];
+      authUserID.value = data.docs[0].id;
       try {
         final datapb =
             await db.collection("pbsi").doc(data.docs[0]['pbsi']).get();
@@ -97,6 +104,7 @@ class AuthController extends GetxController {
           authLevel.value = data.docs[0]['level'];
           authpbsi.value = data.docs[0]['pbsi'];
           authimg.value = data.docs[0]['img'];
+          authUserID.value = data.docs[0].id;
           try {
             final datapb =
                 await db.collection("pbsi").doc(data.docs[0]['pbsi']).get();
@@ -109,7 +117,7 @@ class AuthController extends GetxController {
             print(e);
           }
           Get.offAllNamed(PageNames.Home);
-        }else{
+        } else {
           _auth.signOut();
           isLoginFail.value = true;
         }
@@ -169,6 +177,24 @@ class AuthController extends GetxController {
     } catch (e) {
       return null;
     }
+  }
+
+  changePassword() async {
+    loadC.changeLoading(true);
+    User? user = FirebaseAuth.instance.currentUser;
+    try {
+      final cred = EmailAuthProvider.credential(
+          email: authEmail.value, password: password.value);
+      await user?.reauthenticateWithCredential(cred);
+
+      await user?.updatePassword(newpassword.value);
+      Get.snackbar("Berhasil", "Kata Sandi Berhasil Diperbaharui",
+          backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar("Gagal", "Kata sandi gagal di perbaharui",
+          backgroundColor: Colors.red);
+    }
+    loadC.changeLoading(false);
   }
 
   @override

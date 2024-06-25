@@ -17,7 +17,13 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 2,
       
       actions: [IconButton(onPressed: () {
-        authC.logout();
+        Get.defaultDialog(
+          middleText: "Apakah anda yakin untuk log out?",
+          textCancel: "Tidak",
+          title: "Konfirmasi Log Out",
+          textConfirm: "Iya",
+          onConfirm: ()=>authC.logout(),
+        );
       }, icon: const Icon(Icons.logout))],
     );
   }

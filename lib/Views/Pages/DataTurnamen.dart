@@ -22,6 +22,7 @@ class DataTurnamen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    turC.getData2();
     return SafeArea(
       child: Scaffold(
         appBar: NavBar(title: "Data Turnamen Kota Pekanbaru"),

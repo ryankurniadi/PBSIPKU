@@ -14,15 +14,12 @@ class EditPBSI extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: NavBar(
-          title: "Data PBSI Pekanbaru",
+          title: "Perbaharui Data PBSI Pekanbaru",
         ),
         body: ListView(
           children: [
-            const Center(
-              child: Text("TAMBAH DATA PBSI"),
-            ),
             const SizedBox(
-              height: 20,
+              height: 50,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Get.width / 3),
@@ -101,9 +98,12 @@ class EditPBSI extends StatelessWidget {
                           child: Container(
                             width: Get.width / 1.1,
                             height: 60,
-                            decoration: BoxDecoration(color: Colors.green),
+                            decoration: BoxDecoration(color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),),
                             child: const Center(
-                              child: Text("Perbaharui Data PBSI"),
+                              child: Text("Perbaharui Data PBSI",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),),
                             ),
                           ),
                         )

@@ -78,7 +78,7 @@ class DataAnggota extends StatelessWidget {
                       columns: const [
                         DataColumn(label: Text('Nama')),
                         DataColumn(label: Text('Jabatan')),
-                        DataColumn(label: Text('username')),
+                        DataColumn(label: Text('Level Pemain')),
                         DataColumn(label: Text('Aksi')),
                       ],
                     );

@@ -289,23 +289,33 @@ class AddAnggota extends StatelessWidget {
                           userC.skill.value = value!;
                         },
                       ),
-                      const SizedBox(height: 20,),
-                     InkWell(
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                         userC.addAnggota();
-                        }
-                      },
-                      child: Container(
-                        width: Get.width / 1.1,
-                        height: 60,
-                        decoration: BoxDecoration(color: Colors.green),
-                        child: const Center(
-                          child: Text("Tambah Anggota"),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            userC.addAnggota();
+                          }
+                        },
+                        child: Container(
+                          width: Get.width / 1.1,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Tambah Anggota",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
                     ],
                   ),
                 ),

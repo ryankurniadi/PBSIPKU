@@ -36,7 +36,7 @@ class TabelAnggota extends DataTableSource {
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Align(alignment: Alignment.topLeft, child: Text((data.username != "null" ? "${data.username}" : ""))),
+        child: Align(alignment: Alignment.topLeft, child: Text((data.skill != "null" ? "${data.skill}" : ""))),
       )),
       DataCell(
         Align(

@@ -1,3 +1,7 @@
+import 'dart:html';
+import 'dart:typed_data';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +13,7 @@ import './LoadingController.dart';
 
 class UserController extends GetxController {
   final db = FirebaseFirestore.instance;
+  final Rx<Uint8List?> imageBytes = Uint8List(0).obs;
   final authC = Get.find<AuthController>();
   final loadC = Get.find<LoadingController>();
   String tabel = "users";
@@ -29,6 +34,8 @@ class UserController extends GetxController {
   var skill = "Level D".obs;
   var hp = 0.obs;
   var pbsiname = "".obs;
+  var statusupload = true.obs;
+  var img = ''.obs;
 
   var nik = 0.obs;
   var tgl = DateTime.now().obs;
@@ -36,7 +43,6 @@ class UserController extends GetxController {
   var lahir = "".obs;
   var alamat = "".obs;
   var changeUsername = "".obs;
-  
 
   var idUser = "".obs;
 
@@ -201,7 +207,6 @@ class UserController extends GetxController {
     try {
       final data = await ref.doc(id).get();
 
-
       nama.value = data.data()!.nama!;
       nik.value = data.data()!.nik!;
       tgl.value = data.data()!.tgl!;
@@ -246,7 +251,6 @@ class UserController extends GetxController {
         "nik": nik.value,
         "alamat": alamat.value,
         "lahir": lahir.value,
-
       });
 
       await getUserData();
@@ -259,7 +263,6 @@ class UserController extends GetxController {
       Get.snackbar("Gagal", "Data Gagal Di perbaharui",
           backgroundColor: Colors.red);
     }
-    
   }
 
   getSingleUser() async {
@@ -354,6 +357,77 @@ class UserController extends GetxController {
     }
 
     loadC.changeLoading(false);
+  }
+
+  changePic(Uint8List? image) async {
+    loadC.changeLoading(true);
+    statusupload.value = true;
+    final ref = db.collection("users").withConverter(
+        fromFirestore: User.fromFirestore,
+        toFirestore: (User user, _) => user.toFirestore());
+    try {
+      final data = await ref.doc(authC.authUserID.value).get();
+      String? imgLink = data.data()!.img;
+      
+      if (image != null) {
+        await uploadImg(image!, imgLink!);
+        if (!statusupload.value) {
+          throw Exception('No Image');
+        }
+        await ref.doc(authC.authUserID.value).update({
+        "img": img.value,
+      });
+      await getSingleUser();
+      await authC.loginCheck();
+        Get.snackbar("Berhasil", "Data Berhasil Di Perbaharui",
+          backgroundColor: Colors.green);
+      }
+      imageBytes.value = Uint8List(0);
+    } catch (e) {
+      print(e);
+    }
+    loadC.changeLoading(false);
+  }
+
+  uploadImg(Uint8List imageData, String link) async {
+    try {
+      if (imageBytes.value != null && imageBytes.value!.isNotEmpty) {
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('/Users')
+            .child(DateTime.now().microsecondsSinceEpoch.toString() + ".png");
+        await ref.putData(imageData);
+        if (link != defaultimg) {
+          Reference re = FirebaseStorage.instance.refFromURL(link);
+          await re.delete();
+        }
+        String downloadURL = await ref.getDownloadURL();
+        img.value = downloadURL;
+      } else {
+        statusupload.value = false;
+        throw Exception('No Image');
+      }
+    } catch (e) {
+      Get.snackbar("Gagal", "Gambar Gagal Di Upload",
+          backgroundColor: Colors.red);
+    }
+  }
+
+  Future<void> pickImage() async {
+    final FileUploadInputElement input = FileUploadInputElement();
+    input..accept = 'image/*';
+    input.click();
+    input.onChange.listen((e) {
+      final File file = input.files!.first;
+      final FileReader reader = FileReader();
+
+      reader.onLoadEnd.listen((e) {
+        imageBytes.value = reader.result as Uint8List?;
+      });
+
+      reader.readAsArrayBuffer(file);
+    });
+    update();
   }
 
   @override

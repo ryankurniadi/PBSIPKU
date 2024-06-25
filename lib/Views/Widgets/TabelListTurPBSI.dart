@@ -149,7 +149,9 @@ class TabelListTurPBSI extends DataTableSource {
                         decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(5)),
-                        child: const Center(child: Text("Detail Turnamen")),
+                        child: const Center(child: Text("Detail Turnamen",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),)),
                       ),
                     ),
                     const SizedBox(
@@ -157,6 +159,7 @@ class TabelListTurPBSI extends DataTableSource {
                     ),
                     InkWell(
                       onTap: () async {
+                        turC.isAllPemainSelected.value = true;
                         turC.player1SelectNotify(false);
                         await turC.checkUserTerdaftar(
                             authC.authpbsi.value, data.id!, data.level!);
@@ -179,12 +182,13 @@ class TabelListTurPBSI extends DataTableSource {
                                     backgroundColor:
                                         WidgetStatePropertyAll(Colors.green)),
                                 onPressed: () async{
-                                  Get.back();
+                                  turC.isAllPemainSelected.value = true;
                                   await turC.daftarkanUser(data.id!, authC.authpbsi.value);
                                 },
                                 child: const Text(
                                   "Daftar Anggota",
-                                  style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: Colors.white,),
                                 ))
                           ],
                           content: GetBuilder<ListTurPBSIController>(
@@ -200,6 +204,11 @@ class TabelListTurPBSI extends DataTableSource {
                                       turC.player1SelectNotify(true);
                                       turC.pemain1.value = value;
                                       turC.hideSelectedUser(value);
+                                    },
+                                    validator: (value){
+                                      if(value == null){
+                                        return "Pemain tidak boleh kosong";
+                                      }
                                     },
                                     onTap: () {
                                       turC.player1SelectNotify(false);
@@ -227,6 +236,11 @@ class TabelListTurPBSI extends DataTableSource {
                                         //turC.player1SelectNotify(true);
                                         turC.pemain2.value = value;
                                       },
+                                      validator: (value){
+                                      if(value == null){
+                                        return "Pemain tidak boleh kosong";
+                                      }
+                                    },
                                       items: List<DropdownMenuItem>.generate(
                                           turC.pesertaBelumTerdaftar2.length,
                                           (index) {
@@ -238,7 +252,13 @@ class TabelListTurPBSI extends DataTableSource {
                                         );
                                       }),
                                     ),
-                                ],
+
+                                   Obx((){
+                                    if(!turC.isAllPemainSelected.value){
+                                      return  const Text("Data pemain tidak boleh kosong", style: TextStyle(color: Colors.red),);
+                                    }
+                                    return const SizedBox();
+                                   })                                ],
                               );
                             },
                           ),
@@ -248,9 +268,11 @@ class TabelListTurPBSI extends DataTableSource {
                         height: 40,
                         width: 250,
                         decoration: BoxDecoration(
-                            color: Colors.yellow,
+                            color: Colors.purple,
                             borderRadius: BorderRadius.circular(5)),
-                        child: const Center(child: Text("Daftarkan Anggota")),
+                        child: const Center(child: Text("Daftarkan Anggota",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),)),
                       ),
                     ),
                   ],

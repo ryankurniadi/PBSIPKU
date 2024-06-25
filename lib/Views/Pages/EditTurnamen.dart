@@ -189,7 +189,7 @@ class EditTurnamen extends StatelessWidget {
                               const Row(
                                 children: [
                                   Text(
-                                    "Batas Perwakilan Tiap PBSI",
+                                    "Batas Perwakilan Tim Tiap PBSI",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 17),
@@ -265,6 +265,9 @@ class EditTurnamen extends StatelessWidget {
                                   )
                                 ],
                                 value: data.level,
+                                onSaved: (value){
+                                  turC.level.value = value!;
+                                },
                                 onChanged: (value) {
                                   turC.level.value = value!;
                                 },
@@ -456,7 +459,7 @@ class EditTurnamen extends StatelessWidget {
                             htmlEditorOptions: HtmlEditorOptions(
                               hint:
                                   "Masukan deskripsi lengkap (Hadiah, Peraturan Dll.)",
-                              initialText: turC.ket.value,
+                              initialText: data.ket!,
                               characterLimit: 1000,
                               autoAdjustHeight: true,
                             ),
@@ -512,7 +515,8 @@ class EditTurnamen extends StatelessWidget {
                       child: Container(
                         width: Get.width / 1.1,
                         height: 60,
-                        decoration: const BoxDecoration(color: Colors.green),
+                        decoration: BoxDecoration(color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),),
                         child: const Center(
                           child: Text(
                             "Perbaharui Turnamen",

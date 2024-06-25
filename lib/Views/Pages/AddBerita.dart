@@ -189,9 +189,12 @@ class AddBerita extends StatelessWidget {
                   child: Container(
                     width: Get.width / 1.1,
                     height: 60,
-                    decoration: BoxDecoration(color: Colors.green),
+                    decoration: BoxDecoration(color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),),
                     child: const Center(
-                      child: Text("Tambah Turnamen"),
+                      child: Text("Tambah Berita",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),),
                     ),
                   ),
                 ),

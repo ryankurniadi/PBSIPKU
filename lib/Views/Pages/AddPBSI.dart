@@ -93,9 +93,12 @@ class AddPBSI extends StatelessWidget {
                           child: Container(
                             width: Get.width / 1.1,
                             height: 60,
-                            decoration: BoxDecoration(color: Colors.green),
+                            decoration: BoxDecoration(color: Colors.green,
+                      borderRadius: BorderRadius.circular(10),),
                             child: const Center(
-                              child: Text("Tambah PBSI"),
+                              child: Text("Tambah PBSI",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),),
                             ),
                           ),
                         )
