@@ -65,7 +65,7 @@ class DataBerita extends StatelessWidget {
           ),
           GetBuilder<BeritaController>(
             builder: (_) {
-              if (beritaC.totalDataPerAdmin.value > 0) {
+              if (beritaC.dataPerAdmin.isNotEmpty) {
                 return PaginatedDataTable(
                   source: TabelBerita(context),
                   header: const Text("Data Berita/Kegiatan"),

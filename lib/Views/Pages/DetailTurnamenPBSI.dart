@@ -18,7 +18,7 @@ class DetailTurnamenPBSI extends StatelessWidget {
   final turC = Get.find<TurnamenController>();
   @override
   Widget build(BuildContext context) {
-    terC.getData(turC.turID.value);
+    //terC.getData(turC.turID.value);
     return SafeArea(
         child: Scaffold(
       appBar: NavBar(title: "Detail Turnamen"),

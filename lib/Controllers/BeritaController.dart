@@ -25,6 +25,7 @@ class BeritaController extends GetxController {
 
   var dataBeritaAdmin = [].obs;
   var totalBeritaAdmin = 0.obs;
+  var detailBerita = Berita().obs();
 
   var dataPerAdmin = [].obs;
   var totalDataPerAdmin = 0.obs;
@@ -198,6 +199,22 @@ class BeritaController extends GetxController {
     }
   }
 
+  getDetailBerita(String id)async{
+
+    final ref = db.collection(table).withConverter(
+        fromFirestore: Berita.fromFirestore,
+        toFirestore: (Berita berita, _) => berita.toFirestore());
+    try {
+      final data = await ref.doc(id).get();
+      if(data != null){
+        detailBerita = data.data()!;
+        update();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   uploadImg(Uint8List imageData) async {
     try {
       if (imageBytes.value != null && imageBytes.value!.isNotEmpty) {
@@ -278,8 +295,9 @@ class BeritaController extends GetxController {
         await refs.delete();
       }
       await ref.doc(id).delete();
-      await getBeritaPerAdmin();
       await getData();
+      await getBeritaPerAdmin();
+      
       Get.back();
       Get.snackbar("Berhasil", "Data Berhasil Di Hapus",
           backgroundColor: Colors.green);

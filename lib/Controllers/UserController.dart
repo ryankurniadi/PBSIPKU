@@ -53,28 +53,28 @@ class UserController extends GetxController {
     final ref = db.collection("users").withConverter(
         fromFirestore: User.fromFirestore,
         toFirestore: (User user, _) => user.toFirestore());
+        
     try {
       final docSnap = await ref.orderBy('nama').get();
+      
       if (docSnap.docs.isNotEmpty) {
         totalUser.value = docSnap.docs.length;
         dataUser.clear();
+        
         for (var i = 0; i < docSnap.docs.length; i++) {
-          final datas = await ref
-              .where('email'.toString().toLowerCase(),
-                  isEqualTo:
-                      docSnap.docs[i].data().email.toString().toLowerCase())
-              .get();
 
           String? namas = docSnap.docs[i].data().pbsi;
           if (namas != "") {
-            final snap =
-                await db.collection('pbsi').doc(datas.docs[0]['pbsi']).get();
+            final snap = await db.collection('pbsi').doc(docSnap.docs[i]['pbsi']).get();
+                          
             if (snap != null) {
+              
               namas = snap.data()!['nama'];
             }
           } else {
             namas = "Admin Pusat";
           }
+          
           dataUser.add(User(
             id: docSnap.docs[i].id,
             nama: docSnap.docs[i].data().nama,
@@ -95,6 +95,7 @@ class UserController extends GetxController {
           ));
         }
       } else {
+        
         totalUser.value = 0;
         dataUser.clear();
       }
@@ -218,8 +219,6 @@ class UserController extends GetxController {
       skill.value = data.data()!.skill!;
       idUser.value = id;
 
-      print(nama);
-
       if (level.value != "Root") {
         isRoot.value = false;
       } else {
@@ -267,6 +266,7 @@ class UserController extends GetxController {
 
   getSingleUser() async {
     try {
+      print(authC.authEmail.value);
       final ref = db.collection("users").withConverter(
           fromFirestore: User.fromFirestore,
           toFirestore: (User user, _) => user.toFirestore());
@@ -293,7 +293,7 @@ class UserController extends GetxController {
         tgl: data.docs[0]['tgl'].toDate(),
         token: data.docs[0]['token'],
       );
-
+      print("done");
       final snap = await db.collection('pbsi').doc(userProfil!.pbsi).get();
       if (snap != null) {
         pbsiname.value = snap.data()!['nama'];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pbsipku/Routes/PageNames.dart';
 
 import '../../Models/Berita.dart';
 import '../Widgets/NavBar.dart';
@@ -207,7 +208,10 @@ class Beranda extends StatelessWidget {
                                   height: 3,
                                 ),
                               if(data.isi!.length >= 600)
-                              InkWell(onTap: (){}, child: const Text("Baca Selengkapanya...." , style: TextStyle(
+                              InkWell(onTap: ()async{
+                                await beritaC.getDetailBerita(data.id!);
+                                Get.toNamed(PageNames.DetailBerita);
+                              }, child: const Text("Baca Selengkapanya...." , style: TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold
                               ),)) 

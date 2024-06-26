@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 
+import '../Views/Pages/DetailBerita.dart';
 import '../Views/Pages/DetailTurnamenPBSI.dart';
 import '../Views/Pages/EditBerita.dart';
 import '../Views/Pages/EditProfil.dart';
@@ -176,6 +177,12 @@ class PageRoutes {
           AuthMiddleware(),
         ],
         page: () => EditBerita()),
+    GetPage(
+        name: PageNames.DetailBerita,
+        middlewares: [
+          AuthMiddleware(),
+        ],
+        page: () => DetailBerita()),
 
     //Users
     GetPage(

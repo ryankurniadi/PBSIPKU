@@ -68,12 +68,13 @@ class PesertaTerdaftarController extends GetxController {
       } else {
         totalPeserta.value = 0;
       }
-      loadC.changeLoading(false);
+
       update();
     } catch (e) {
-      loadC.changeLoading(false);
+     
       print(e);
     }
+     loadC.changeLoading(false);
   }
 
   lunasiPendaftaran(String id, String IDtur) async {

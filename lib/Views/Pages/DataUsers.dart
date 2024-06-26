@@ -65,7 +65,7 @@ class DataUsers extends StatelessWidget {
             ),
             GetBuilder<UserController>(
               builder: (userC) {
-                if (userC.totalUser.value > 0) {
+                if (userC.dataUser.isNotEmpty) {
                   return PaginatedDataTable(
                     source: TabelUser(context),
                     header: const Text("Data User"),

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pbsipku/Controllers/AuthController.dart';
 
+import '../../Controllers/PesertaTerdaftarController.dart';
 import '../../Models/Turnamen.dart';
 import '../../Controllers/ListTurPBSIController.dart';
 import '../../Controllers/TurnamenContoller.dart';
@@ -16,6 +17,7 @@ class TabelListTurPBSI extends DataTableSource {
   final turC = Get.find<ListTurPBSIController>();
   final authC = Get.find<AuthController>();
   final turAsliC = Get.find<TurnamenController>();
+  final terC = Get.put(PesertaTerdaftarController());
 
   @override
   DataRow? getRow(int index) {
@@ -140,6 +142,7 @@ class TabelListTurPBSI extends DataTableSource {
                       onTap: () async {
                         turAsliC.turID.value = "${data.id}";
                         await turAsliC.getSingleTur();
+                        await terC.getData("${data.id}");
                         Get.toNamed(PageNames.DetailTurnamenPBSI);
                         //turC.pengajuanTur("Disetujui");
                       },
